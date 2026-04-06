@@ -1,0 +1,79 @@
+<div class="login-page">
+  <!-- Animated background shapes -->
+  <div class="bg-shapes">
+    <div class="shape shape-1"></div>
+    <div class="shape shape-2"></div>
+    <div class="shape shape-3"></div>
+    <div class="shape shape-4"></div>
+  </div>
+
+  <div class="login-card">
+    <!-- Logo/Icon -->
+    <div class="login-header">
+      <div class="login-icon-wrapper">
+        <i class="bi bi-shield-lock-fill"></i>
+      </div>
+      <h1>Bienvenido</h1>
+      <p class="login-subtitle">Inicia sesión para acceder al sistema</p>
+    </div>
+
+    <!-- Form -->
+    <form (ngSubmit)="onSubmit()" class="login-form">
+      <!-- Usuario -->
+      <div class="input-group-custom">
+        <div class="input-icon">
+          <i class="bi bi-person-fill"></i>
+        </div>
+        <input
+          type="text"
+          id="usuario"
+          [(ngModel)]="usuario"
+          name="usuario"
+          placeholder="Usuario"
+          autocomplete="username"
+          [disabled]="isLoading"
+          required
+        />
+      </div>
+
+      <!-- Password -->
+      <div class="input-group-custom">
+        <div class="input-icon">
+          <i class="bi bi-key-fill"></i>
+        </div>
+        <input
+          [type]="showPassword ? 'text' : 'password'"
+          id="password"
+          [(ngModel)]="password"
+          name="password"
+          placeholder="Contraseña"
+          autocomplete="current-password"
+          [disabled]="isLoading"
+          required
+        />
+        <button type="button" class="toggle-password" (click)="togglePassword()">
+          <i class="bi" [class]="showPassword ? 'bi-eye-slash-fill' : 'bi-eye-fill'"></i>
+        </button>
+      </div>
+
+      <!-- Submit -->
+      <button type="submit" class="login-btn" [disabled]="isLoading">
+        @if (isLoading) {
+          <span class="spinner-border spinner-border-sm me-2"></span>
+          Ingresando...
+        } @else {
+          <i class="bi bi-box-arrow-in-right me-2"></i>
+          Iniciar Sesión
+        }
+      </button>
+    </form>
+
+    <!-- Footer -->
+    <div class="login-footer">
+      <p>
+        <i class="bi bi-clock-history me-1"></i>
+        Sistema de Control de Asistencia
+      </p>
+    </div>
+  </div>
+</div>

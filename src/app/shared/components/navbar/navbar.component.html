@@ -1,0 +1,53 @@
+<nav class="navbar-custom" [class.open]="isMenuOpen">
+  <div class="navbar-inner">
+    <!-- Brand -->
+    <a routerLink="/" class="navbar-brand" (click)="closeMenu()">
+      <i class="bi bi-clock-history brand-icon"></i>
+      <span class="brand-text">AsistenciaPro</span>
+    </a>
+
+    <!-- Hamburger Toggle (mobile) -->
+    <button class="navbar-toggler" (click)="toggleMenu()" [attr.aria-expanded]="isMenuOpen">
+      <span class="toggler-bar"></span>
+      <span class="toggler-bar"></span>
+      <span class="toggler-bar"></span>
+    </button>
+
+    <!-- Nav Links -->
+    <div class="navbar-links" [class.show]="isMenuOpen">
+      @if (isAuthenticated) {
+        <a routerLink="/dashboard" routerLinkActive="active" class="nav-link-custom" (click)="closeMenu()">
+          <i class="bi bi-grid-1x2-fill"></i>
+          <span>Dashboard</span>
+        </a>
+
+        @if (isAdmin) {
+          <a routerLink="/attendance" routerLinkActive="active" class="nav-link-custom" (click)="closeMenu()">
+            <i class="bi bi-person-check-fill"></i>
+            <span>Registro</span>
+          </a>
+        }
+
+        <div class="nav-user-section">
+          <span class="nav-user-badge">
+            <i class="bi bi-person-circle"></i>
+            {{ userName }}
+          </span>
+          <button class="nav-logout-btn" (click)="logout()">
+            <i class="bi bi-box-arrow-right"></i>
+            <span>Salir</span>
+          </button>
+        </div>
+      } @else {
+        <a routerLink="/login" routerLinkActive="active" class="nav-link-custom" (click)="closeMenu()">
+          <i class="bi bi-box-arrow-in-right"></i>
+          <span>Iniciar Sesión</span>
+        </a>
+        <a routerLink="/attendance" routerLinkActive="active" class="nav-link-custom" (click)="closeMenu()">
+          <i class="bi bi-person-check-fill"></i>
+          <span>Registro</span>
+        </a>
+      }
+    </div>
+  </div>
+</nav>

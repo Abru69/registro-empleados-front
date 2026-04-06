@@ -1,0 +1,273 @@
+<div class="dashboard-page">
+  <!-- Header -->
+  <div class="dashboard-header">
+    <div class="header-text">
+      <h1>
+        <i class="bi bi-grid-1x2-fill me-2"></i>
+        Panel de Asistencias
+      </h1>
+      <p class="header-subtitle">Visualiza y gestiona los registros de asistencia</p>
+    </div>
+  </div>
+
+  <!-- Stats Cards -->
+  <div class="stats-grid">
+    <div class="stat-card stat-employees">
+      <div class="stat-icon-wrapper">
+        <i class="bi bi-people-fill"></i>
+      </div>
+      <div class="stat-info">
+        <span class="stat-value">{{ totalEmpleados }}</span>
+        <span class="stat-label">Empleados</span>
+      </div>
+    </div>
+
+    <div class="stat-card stat-today">
+      <div class="stat-icon-wrapper">
+        <i class="bi bi-calendar-check-fill"></i>
+      </div>
+      <div class="stat-info">
+        <span class="stat-value">{{ registrosHoy }}</span>
+        <span class="stat-label">Registros Hoy</span>
+      </div>
+    </div>
+
+    <div class="stat-card stat-pending">
+      <div class="stat-icon-wrapper">
+        <i class="bi bi-clock-history"></i>
+      </div>
+      <div class="stat-info">
+        <span class="stat-value">{{ sinSalida }}</span>
+        <span class="stat-label">Sin Salida</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Nav Tabs -->
+  <div class="dashboard-tabs">
+    <button class="tab-btn" [class.active]="activeTab === 'empleados'" (click)="setTab('empleados')">
+      <i class="bi bi-people-fill me-2"></i>Empleados
+    </button>
+    <button class="tab-btn" [class.active]="activeTab === 'registros'" (click)="setTab('registros')">
+      <i class="bi bi-card-checklist me-2"></i>Registros
+    </button>
+    <button class="tab-btn" [class.active]="activeTab === 'semanales'" (click)="setTab('semanales')">
+      <i class="bi bi-calendar-range me-2"></i>Horas Semanales
+    </button>
+  </div>
+
+  <!-- Empleados Section -->
+  <div class="section-card" [class.d-none]="activeTab !== 'empleados'">
+    <div class="section-header">
+      <h2>
+        <i class="bi bi-person-badge-fill me-2"></i>
+        Gestión de Empleados
+      </h2>
+    </div>
+
+    <div class="add-empleado-form">
+      <div class="filter-field w-50">
+        <label for="nuevoEmpleado"><i class="bi bi-person-plus-fill me-1"></i>Añadir Empleado</label>
+        <div class="d-flex gap-2">
+          <input type="text" id="nuevoEmpleado" [(ngModel)]="nuevoEmpleadoNombre" placeholder="Nombre completo" (keypress)="$event.key === 'Enter' ? addEmpleado() : null" />
+          <button class="btn-filter-primary whitespace-nowrap" (click)="addEmpleado()" [disabled]="isAddingEmpleado">
+            @if(isAddingEmpleado) { <span class="spinner-border spinner-border-sm"></span> } @else { <i class="bi bi-plus-lg"></i> Añadir }
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="empleados-list mt-4">
+      @if (isLoadingEmpleadosList) {
+        <div class="grid-loading"><div class="loading-spinner"></div><span>Cargando empleados...</span></div>
+      } @else if (empleados.length === 0) {
+        <div class="text-center text-muted p-4">No hay empleados registrados. Añade uno arriba.</div>
+      } @else {
+        <div class="table-responsive">
+          <table class="table table-dark table-hover align-middle custom-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Nombre</th>
+                <th class="text-end">Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (emp of empleados; track emp.id) {
+                <tr>
+                  <td>#{{emp.id}}</td>
+                  <td class="fw-bold">{{emp.nombre}}</td>
+                  <td class="text-end">
+                    <button class="btn btn-sm btn-danger custom-btn-danger" (click)="deleteEmpleado(emp.id)">
+                      <i class="bi bi-trash-fill"></i> Eliminar
+                    </button>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      }
+    </div>
+  </div>
+
+  <!-- Attendance Records Section -->
+  <div class="section-card" [class.d-none]="activeTab !== 'registros'">
+    <div class="section-header">
+      <h2>
+        <i class="bi bi-table me-2"></i>
+        Registros de Asistencia
+      </h2>
+    </div>
+
+    <!-- Filters -->
+    <div class="filter-section">
+      <div class="filter-grid">
+        <div class="filter-field">
+          <label for="filterNombre">
+            <i class="bi bi-search me-1"></i>Nombre
+          </label>
+          <input
+            type="text"
+            id="filterNombre"
+            [(ngModel)]="filterNombre"
+            placeholder="Buscar por nombre..."
+            (keypress)="onAttendanceKeyPress($event)"
+          />
+        </div>
+        <div class="filter-field">
+          <label for="filterDesde">
+            <i class="bi bi-calendar-event me-1"></i>Desde
+          </label>
+          <input
+            type="date"
+            id="filterDesde"
+            [(ngModel)]="filterDesde"
+            [max]="todayMax"
+          />
+        </div>
+        <div class="filter-field">
+          <label for="filterHasta">
+            <i class="bi bi-calendar-event me-1"></i>Hasta
+          </label>
+          <input
+            type="date"
+            id="filterHasta"
+            [(ngModel)]="filterHasta"
+            [max]="todayMax"
+          />
+        </div>
+      </div>
+      <div class="filter-actions">
+        <button class="btn-filter-primary" (click)="filterAttendance()">
+          <i class="bi bi-funnel-fill me-1"></i>Buscar
+        </button>
+        <button class="btn-filter-secondary" (click)="clearAttendanceFilters()">
+          <i class="bi bi-x-circle me-1"></i>Limpiar
+        </button>
+        <button class="btn-filter-export" (click)="exportAttendance()">
+          <i class="bi bi-file-earmark-spreadsheet me-1"></i>Exportar CSV
+        </button>
+      </div>
+    </div>
+
+    <!-- AG Grid -->
+    <div class="grid-wrapper">
+      @if (isLoadingAttendance) {
+        <div class="grid-loading">
+          <div class="loading-spinner"></div>
+          <span>Cargando registros...</span>
+        </div>
+      }
+      <ag-grid-angular
+        style="width: 100%; height: 500px;"
+        [theme]="gridTheme"
+        [rowData]="attendanceRows"
+        [columnDefs]="attendanceColDefs"
+        [defaultColDef]="defaultColDef"
+        [pagination]="true"
+        [paginationPageSize]="paginationPageSize"
+        [paginationPageSizeSelector]="paginationPageSizeSelector"
+        [localeText]="localeText"
+        [animateRows]="true"
+        [suppressColumnVirtualisation]="true"
+        (gridReady)="onAttendanceGridReady($event)"
+        (gridSizeChanged)="onGridSizeChanged($event)"
+      />
+    </div>
+  </div>
+
+  <!-- Weekly Hours Section -->
+  <div class="section-card" [class.d-none]="activeTab !== 'semanales'">
+    <div class="section-header">
+      <h2>
+        <i class="bi bi-bar-chart-fill me-2"></i>
+        Horas Semanales
+      </h2>
+    </div>
+
+    <!-- Filters -->
+    <div class="filter-section">
+      <div class="filter-grid">
+        <div class="filter-field">
+          <label for="filterNombreSemanal">
+            <i class="bi bi-search me-1"></i>Empleado
+          </label>
+          <input
+            type="text"
+            id="filterNombreSemanal"
+            [(ngModel)]="filterNombreSemanal"
+            placeholder="Buscar por nombre..."
+            (keypress)="onWeeklyKeyPress($event)"
+          />
+        </div>
+        <div class="filter-field">
+          <label for="filterSemana">
+            <i class="bi bi-calendar-week me-1"></i>Semana
+          </label>
+          <input
+            type="week"
+            id="filterSemana"
+            [(ngModel)]="filterSemana"
+          />
+        </div>
+      </div>
+      <div class="filter-actions">
+        <button class="btn-filter-primary" (click)="filterWeekly()">
+          <i class="bi bi-funnel-fill me-1"></i>Filtrar
+        </button>
+        <button class="btn-filter-secondary" (click)="clearWeeklyFilters()">
+          <i class="bi bi-x-circle me-1"></i>Limpiar
+        </button>
+        <button class="btn-filter-export" (click)="exportWeekly()">
+          <i class="bi bi-file-earmark-spreadsheet me-1"></i>Exportar CSV
+        </button>
+      </div>
+    </div>
+
+    <!-- AG Grid -->
+    <div class="grid-wrapper">
+      @if (isLoadingWeekly) {
+        <div class="grid-loading">
+          <div class="loading-spinner"></div>
+          <span>Cargando datos semanales...</span>
+        </div>
+      }
+      <ag-grid-angular
+        style="width: 100%; height: 500px;"
+        [theme]="gridTheme"
+        [rowData]="weeklyRows"
+        [columnDefs]="weeklyColDefs"
+        [defaultColDef]="defaultColDef"
+        [pagination]="true"
+        [paginationPageSize]="paginationPageSize"
+        [paginationPageSizeSelector]="paginationPageSizeSelector"
+        [localeText]="localeText"
+        [animateRows]="true"
+        [suppressColumnVirtualisation]="true"
+        (gridReady)="onWeeklyGridReady($event)"
+        (gridSizeChanged)="onGridSizeChanged($event)"
+      />
+    </div>
+  </div>
+</div>

@@ -1,0 +1,84 @@
+<div class="attendance-page">
+  <!-- Background -->
+  <div class="bg-pattern">
+    <div class="pattern-dot"></div>
+  </div>
+
+  <div class="attendance-card">
+    <!-- Clock Section -->
+    <div class="clock-section">
+      <div class="clock-ring">
+        <div class="clock-inner">
+          <i class="bi bi-clock-fill clock-icon"></i>
+        </div>
+      </div>
+      <div class="clock-time">{{ horaActual }}</div>
+      <div class="clock-date">{{ fechaActual }}</div>
+    </div>
+
+    <!-- Divider -->
+    <div class="card-divider">
+      <span class="divider-text">Registro de Asistencia</span>
+    </div>
+
+    <!-- Input Section -->
+    <div class="input-section">
+      <div class="name-input-wrapper">
+        <i class="bi bi-person-fill input-prefix-icon"></i>
+        @if (isLoadingEmpleados) {
+           <div class="form-control-placeholder">Cargando empleados...</div>
+        } @else {
+           <select 
+             id="nombre" 
+             [(ngModel)]="nombre" 
+             class="attendance-select" 
+             [disabled]="isRegistering"
+           >
+             <option value="" disabled selected>Selecciona tu nombre</option>
+             @for (emp of empleados; track emp.id) {
+                <option [value]="emp.nombre">{{ emp.nombre }}</option>
+             }
+           </select>
+        }
+      </div>
+
+      <div class="btn-group-custom">
+        <button
+          class="btn-entrada"
+          (click)="registrar('entrada')"
+          [disabled]="isRegistering"
+        >
+          @if (isRegistering && lastAction === 'entrada') {
+            <span class="spinner-border spinner-border-sm me-2"></span>
+            Registrando...
+          } @else {
+            <i class="bi bi-box-arrow-in-right me-2"></i>
+            Registrar Entrada
+          }
+        </button>
+
+        <button
+          class="btn-salida"
+          (click)="registrar('salida')"
+          [disabled]="isRegistering"
+        >
+          @if (isRegistering && lastAction === 'salida') {
+            <span class="spinner-border spinner-border-sm me-2"></span>
+            Registrando...
+          } @else {
+            <i class="bi bi-box-arrow-left me-2"></i>
+            Registrar Salida
+          }
+        </button>
+      </div>
+    </div>
+
+    <!-- Info Footer -->
+    <div class="attendance-footer">
+      <div class="footer-item">
+        <i class="bi bi-info-circle"></i>
+        <span>Ingresa tu nombre y presiona Entrada o Salida</span>
+      </div>
+    </div>
+  </div>
+</div>
