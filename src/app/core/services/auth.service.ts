@@ -52,9 +52,7 @@ export class AuthService {
     formData.append('usuario', usuario);
     formData.append('password', password);
 
-    return this.http.post<LoginResponse>(`${this.apiUrl}/api/login`, formData, {
-      withCredentials: true
-    }).pipe(
+    return this.http.post<LoginResponse>(`${this.apiUrl}/api/login`, formData).pipe(
       tap(response => {
         if (response.status === 'ok' && response.usuario) {
           const user: User = {
@@ -70,9 +68,7 @@ export class AuthService {
   }
 
   logout(): Observable<any> {
-    return this.http.get(`${this.apiUrl}/api/logout`, {
-      withCredentials: true
-    }).pipe(
+    return this.http.get(`${this.apiUrl}/api/logout`).pipe(
       tap(() => {
         localStorage.removeItem('currentUser');
         this.currentUserSubject.next(null);

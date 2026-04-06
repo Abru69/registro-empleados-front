@@ -55,9 +55,7 @@ export class AttendanceService {
     formData.append('nombre', nombre);
     formData.append('accion', accion);
 
-    return this.http.post<RegistroResponse>(`${this.apiUrl}/api/registrar`, formData, {
-      withCredentials: true
-    });
+    return this.http.post<RegistroResponse>(`${this.apiUrl}/api/registrar`, formData);
   }
 
   getAttendanceList(filters?: { desde?: string; hasta?: string; nombre?: string }): Observable<AttendanceListResponse> {
@@ -67,8 +65,7 @@ export class AttendanceService {
     if (filters?.nombre) params.nombre = filters.nombre;
 
     return this.http.get<AttendanceListResponse>(`${this.apiUrl}/api/attendance_list`, {
-      params,
-      withCredentials: true
+      params
     });
   }
 
@@ -78,8 +75,7 @@ export class AttendanceService {
     if (filters?.semana) params.semana = filters.semana;
 
     return this.http.get<WeeklyHoursResponse>(`${this.apiUrl}/api/weekly_hours`, {
-      params,
-      withCredentials: true
+      params
     });
   }
 }

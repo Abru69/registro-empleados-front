@@ -21,16 +21,16 @@ export class EmpleadoService {
   constructor(private http: HttpClient) {}
 
   getEmpleados(): Observable<EmpleadoResponse> {
-    return this.http.get<EmpleadoResponse>(`${this.apiUrl}/api/empleados`, { withCredentials: true });
+    return this.http.get<EmpleadoResponse>(`${this.apiUrl}/api/empleados`);
   }
 
   addEmpleado(nombre: string): Observable<EmpleadoResponse> {
     const formData = new FormData();
     formData.append('nombre', nombre);
-    return this.http.post<EmpleadoResponse>(`${this.apiUrl}/api/empleados`, formData, { withCredentials: true });
+    return this.http.post<EmpleadoResponse>(`${this.apiUrl}/api/empleados`, formData);
   }
 
   deleteEmpleado(id: number): Observable<EmpleadoResponse> {
-    return this.http.delete<EmpleadoResponse>(`${this.apiUrl}/api/empleados/${id}`, { withCredentials: true });
+    return this.http.delete<EmpleadoResponse>(`${this.apiUrl}/api/empleados/${id}`);
   }
 }
