@@ -6,33 +6,19 @@
       <span class="brand-text">AsistenciaPro</span>
     </a>
 
-    <!-- Hamburger Toggle (mobile) -->
-    <div class="navbar-right-controls">
-      <button class="theme-toggle-btn" (click)="toggleTheme()" [attr.aria-label]="isDark ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro'">
-        <i [class]="isDark ? 'bi bi-sun-fill' : 'bi bi-moon-fill'"></i>
-      </button>
-      <button class="navbar-toggler" (click)="toggleMenu()" [attr.aria-expanded]="isMenuOpen">
-        <span class="toggler-bar"></span>
-        <span class="toggler-bar"></span>
-        <span class="toggler-bar"></span>
-      </button>
-    </div>
-
-    <!-- Nav Links -->
-    <div class="navbar-links" [class.show]="isMenuOpen">
+    <!-- Desktop Nav Links -->
+    <div class="navbar-links navbar-links-desktop">
       @if (isAuthenticated) {
         @if (isAdmin) {
-          <a routerLink="/dashboard" routerLinkActive="active" class="nav-link-custom" (click)="closeMenu()">
+          <a routerLink="/dashboard" routerLinkActive="active" class="nav-link-custom">
             <i class="bi bi-grid-1x2-fill"></i>
             <span>Dashboard</span>
           </a>
         }
-
-        <a routerLink="/attendance" routerLinkActive="active" class="nav-link-custom" (click)="closeMenu()">
+        <a routerLink="/attendance" routerLinkActive="active" class="nav-link-custom">
           <i class="bi bi-person-check-fill"></i>
           <span>Registro</span>
         </a>
-
         <div class="nav-user-section">
           <span class="nav-user-badge">
             <i class="bi bi-person-circle"></i>
@@ -44,15 +30,62 @@
           </button>
         </div>
       } @else {
-        <a routerLink="/login" routerLinkActive="active" class="nav-link-custom" (click)="closeMenu()">
+        <a routerLink="/login" routerLinkActive="active" class="nav-link-custom">
           <i class="bi bi-box-arrow-in-right"></i>
           <span>Iniciar Sesión</span>
         </a>
-        <a routerLink="/attendance" routerLinkActive="active" class="nav-link-custom" (click)="closeMenu()">
+        <a routerLink="/attendance" routerLinkActive="active" class="nav-link-custom">
           <i class="bi bi-person-check-fill"></i>
           <span>Registro</span>
         </a>
       }
     </div>
+
+    <!-- Hamburger Toggle (mobile) -->
+    <div class="navbar-right-controls">
+      <button class="theme-toggle-btn" (click)="toggleTheme()" [attr.aria-label]="isDark ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro'">
+        <i [class]="isDark ? 'bi bi-sun-fill' : 'bi bi-moon-fill'"></i>
+      </button>
+      <button class="navbar-toggler" (click)="toggleMenu()" [attr.aria-expanded]="isMenuOpen">
+        <span class="toggler-bar"></span>
+        <span class="toggler-bar"></span>
+        <span class="toggler-bar"></span>
+      </button>
+    </div>
   </div>
 </nav>
+
+<!-- Mobile overlay — outside <nav> to escape backdrop-filter stacking context -->
+<div class="navbar-mobile-overlay" [class.show]="isMenuOpen">
+  @if (isAuthenticated) {
+    @if (isAdmin) {
+      <a routerLink="/dashboard" routerLinkActive="active" class="nav-link-custom" (click)="closeMenu()">
+        <i class="bi bi-grid-1x2-fill"></i>
+        <span>Dashboard</span>
+      </a>
+    }
+    <a routerLink="/attendance" routerLinkActive="active" class="nav-link-custom" (click)="closeMenu()">
+      <i class="bi bi-person-check-fill"></i>
+      <span>Registro</span>
+    </a>
+    <div class="nav-user-section">
+      <span class="nav-user-badge">
+        <i class="bi bi-person-circle"></i>
+        {{ userName }}
+      </span>
+      <button class="nav-logout-btn" (click)="logout()">
+        <i class="bi bi-box-arrow-right"></i>
+        <span>Salir</span>
+      </button>
+    </div>
+  } @else {
+    <a routerLink="/login" routerLinkActive="active" class="nav-link-custom" (click)="closeMenu()">
+      <i class="bi bi-box-arrow-in-right"></i>
+      <span>Iniciar Sesión</span>
+    </a>
+    <a routerLink="/attendance" routerLinkActive="active" class="nav-link-custom" (click)="closeMenu()">
+      <i class="bi bi-person-check-fill"></i>
+      <span>Registro</span>
+    </a>
+  }
+</div>

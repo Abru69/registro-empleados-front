@@ -111,11 +111,16 @@
   transform: translateY(-7.5px) rotate(-45deg);
 }
 
-/* Links */
+/* Desktop links (inside nav bar) */
 .navbar-links {
   display: flex;
   align-items: center;
   gap: 0.5rem;
+}
+
+/* Mobile full-screen overlay (lives outside <nav>) */
+.navbar-mobile-overlay {
+  display: none;
 }
 
 .nav-link-custom {
@@ -207,39 +212,49 @@
     display: flex;
   }
 
-  .navbar-links {
+  /* Hide desktop links on mobile */
+  .navbar-links-desktop {
+    display: none;
+  }
+
+  /* Full-screen mobile overlay — outside <nav> so backdrop-filter doesn't trap it */
+  .navbar-mobile-overlay {
+    display: flex;
     position: fixed;
     top: 0;
     left: 0;
     right: 0;
     bottom: 0;
     flex-direction: column;
+    align-items: center;
     justify-content: center;
     gap: 0.75rem;
     padding: 2rem;
     background: var(--navbar-mobile-bg);
     backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
     transform: translateY(-100%);
     opacity: 0;
     pointer-events: none;
-    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+                opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     z-index: 1040;
   }
 
-  .navbar-links.show {
+  .navbar-mobile-overlay.show {
     transform: translateY(0);
     opacity: 1;
     pointer-events: auto;
   }
 
-  .nav-link-custom {
+  .navbar-mobile-overlay .nav-link-custom {
     font-size: 1.1rem;
     padding: 0.875rem 1.5rem;
     width: 100%;
     justify-content: center;
   }
 
-  .nav-user-section {
+  .navbar-mobile-overlay .nav-user-section {
     flex-direction: column;
     border-left: none;
     margin-left: 0;
@@ -247,9 +262,10 @@
     padding-top: 1rem;
     border-top: 1px solid var(--color-border);
     width: 100%;
+    align-items: center;
   }
 
-  .nav-logout-btn {
+  .navbar-mobile-overlay .nav-logout-btn {
     width: 100%;
     justify-content: center;
     padding: 0.875rem;
