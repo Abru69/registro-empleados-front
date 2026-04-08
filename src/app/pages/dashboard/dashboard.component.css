@@ -375,6 +375,12 @@
 }
 
 .custom-table {
+  --bs-table-bg: transparent;
+  --bs-table-color: var(--color-text);
+  --bs-table-hover-bg: var(--tab-hover-bg);
+  --bs-table-hover-color: var(--color-text);
+  --bs-table-striped-bg: transparent;
+  --bs-table-border-color: var(--table-row-border);
   background-color: transparent !important;
   color: var(--color-text);
   width: 100%;
