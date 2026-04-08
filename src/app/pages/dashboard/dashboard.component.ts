@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectorRef, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AgGridAngular } from 'ag-grid-angular';
@@ -20,6 +20,8 @@ import {
 } from '@core/services/attendance.service';
 import { EmpleadoService, Empleado } from '@core/services/empleado.service';
 import { ToastService } from '@shared/components/toast/toast.service';
+import { ThemeService } from '@core/services/theme.service';
+import { Subscription } from 'rxjs';
 
 ModuleRegistry.registerModules([AllCommunityModule]);
 
@@ -70,8 +72,12 @@ export class DashboardComponent implements OnInit, OnDestroy {
   nuevoEmpleadoNombre = '';
   isAddingEmpleado = false;
 
-  // Custom dark theme for AG-Grid
-  gridTheme = themeQuartz.withParams({
+  private cdr = inject(ChangeDetectorRef);
+  private themeService = inject(ThemeService);
+  private themeSub!: Subscription;
+
+  // AG-Grid themes
+  private darkGridTheme = themeQuartz.withParams({
     backgroundColor: 'rgba(15, 23, 42, 0.6)',
     foregroundColor: '#e2e8f0',
     headerBackgroundColor: 'rgba(30, 41, 59, 0.8)',
@@ -87,6 +93,25 @@ export class DashboardComponent implements OnInit, OnDestroy {
     selectedRowBackgroundColor: 'rgba(99, 102, 241, 0.12)',
     rangeSelectionBorderColor: '#6366f1'
   });
+
+  private lightGridTheme = themeQuartz.withParams({
+    backgroundColor: '#ffffff',
+    foregroundColor: '#1e293b',
+    headerBackgroundColor: '#f1f5f9',
+    headerFontWeight: 600,
+    rowHoverColor: 'rgba(79, 70, 229, 0.06)',
+    borderColor: 'rgba(0, 0, 0, 0.08)',
+    cellHorizontalPaddingScale: 1.2,
+    headerFontSize: 13,
+    fontSize: 14,
+    rowBorder: true,
+    wrapperBorderRadius: 12,
+    headerColumnResizeHandleColor: 'rgba(79, 70, 229, 0.3)',
+    selectedRowBackgroundColor: 'rgba(79, 70, 229, 0.08)',
+    rangeSelectionBorderColor: '#4f46e5'
+  });
+
+  gridTheme = this.themeService.isDark ? this.darkGridTheme : this.lightGridTheme;
 
   // Attendance columns
   attendanceColDefs: ColDef<AttendanceRecord>[] = [
@@ -248,11 +273,17 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.startAutoRefresh();
     this.loadEmpleados();
 
+    this.themeSub = this.themeService.theme$.subscribe(theme => {
+      this.gridTheme = theme === 'dark' ? this.darkGridTheme : this.lightGridTheme;
+      this.cdr.detectChanges();
+    });
+
     document.addEventListener('visibilitychange', this.handleVisibility);
   }
 
   ngOnDestroy(): void {
     this.stopAutoRefresh();
+    this.themeSub?.unsubscribe();
     document.removeEventListener('visibilitychange', this.handleVisibility);
   }
 
@@ -435,7 +466,12 @@ export class DashboardComponent implements OnInit, OnDestroy {
   setTab(tab: 'registros' | 'semanales' | 'empleados'): void {
     this.activeTab = tab;
     if (tab === 'empleados') {
-       this.loadEmpleados();
+       // Carga instantánea usando estado en memoria si ya existen
+       if (this.empleados.length > 0) {
+         this.loadEmpleados(true); // actualiza debajo del cajón (silencioso)
+       } else {
+         this.loadEmpleados(false);
+       }
     } else {
        // Timeout para que el DOM muestre el grid antes de redimensionar
        setTimeout(() => {
@@ -446,18 +482,20 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
   // Empleados Management Logic
-  loadEmpleados(): void {
-    this.isLoadingEmpleadosList = true;
+  loadEmpleados(silent = false): void {
+    if (!silent) this.isLoadingEmpleadosList = true;
     this.empleadoService.getEmpleados().subscribe({
       next: (res) => {
-        if (res.success && res.data) {
-          this.empleados = res.data as Empleado[];
-        }
         this.isLoadingEmpleadosList = false;
+        if (res && res.success) {
+          this.empleados = (res.data || []) as Empleado[];
+        }
+        this.cdr.detectChanges();
       },
       error: () => {
         this.isLoadingEmpleadosList = false;
         this.toastService.error('Error cargando empleados');
+        this.cdr.detectChanges();
       }
     });
   }
@@ -476,14 +514,22 @@ export class DashboardComponent implements OnInit, OnDestroy {
         if (res.success) {
           this.toastService.success(res.message || 'Empleado agregado');
           this.nuevoEmpleadoNombre = '';
-          this.loadEmpleados();
+          
+          // Actualización optimista de la tabla al instante:
+          if (res.data) {
+             this.empleados = [...this.empleados, res.data as Empleado].sort((a,b) => a.nombre.localeCompare(b.nombre));
+          } else {
+             this.loadEmpleados(true);
+          }
         } else {
           this.toastService.error(res.message || 'Error al agregar');
         }
+        this.cdr.detectChanges();
       },
       error: () => {
         this.isAddingEmpleado = false;
         this.toastService.error('Error del servidor');
+        this.cdr.detectChanges();
       }
     });
   }

@@ -22,7 +22,7 @@ export const noAuthGuard: CanActivateFn = () => {
     return true;
   }
 
-  router.navigate(['/dashboard']);
+  router.navigate([authService.isAdmin ? '/dashboard' : '/attendance']);
   return false;
 };
 
@@ -37,7 +37,7 @@ export const adminGuard: CanActivateFn = () => {
   if (!authService.isAuthenticated) {
     router.navigate(['/login']);
   } else {
-    router.navigate(['/dashboard']);
+    router.navigate(['/attendance']);
   }
   return false;
 };

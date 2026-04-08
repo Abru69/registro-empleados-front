@@ -8,6 +8,7 @@ export interface User {
   usuario: string;
   rol: string;
   user_id: number;
+  token?: string;
 }
 
 export interface LoginResponse {
@@ -16,6 +17,7 @@ export interface LoginResponse {
   usuario?: string;
   rol?: string;
   user_id?: number;
+  token?: string;
 }
 
 @Injectable({ providedIn: 'root' })
@@ -54,11 +56,12 @@ export class AuthService {
 
     return this.http.post<LoginResponse>(`${this.apiUrl}/api/login`, formData).pipe(
       tap(response => {
-        if (response.status === 'ok' && response.usuario) {
+        if (response.status === 'ok' && response.usuario && response.token) {
           const user: User = {
             usuario: response.usuario,
             rol: response.rol || 'user',
-            user_id: response.user_id || 0
+            user_id: response.user_id || 0,
+            token: response.token
           };
           localStorage.setItem('currentUser', JSON.stringify(user));
           this.currentUserSubject.next(user);

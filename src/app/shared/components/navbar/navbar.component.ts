@@ -2,6 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { AuthService } from '@core/services/auth.service';
+import { ThemeService } from '@core/services/theme.service';
 import { Subscription } from 'rxjs';
 
 @Component({
@@ -16,9 +17,11 @@ export class NavbarComponent implements OnInit, OnDestroy {
   isAuthenticated = false;
   isAdmin = false;
   userName = '';
+  isDark = true;
   private sub!: Subscription;
+  private themeSub!: Subscription;
 
-  constructor(private authService: AuthService) {}
+  constructor(private authService: AuthService, private themeService: ThemeService) {}
 
   ngOnInit(): void {
     this.sub = this.authService.currentUser$.subscribe(user => {
@@ -26,10 +29,18 @@ export class NavbarComponent implements OnInit, OnDestroy {
       this.isAdmin = user?.rol === 'admin';
       this.userName = user?.usuario || '';
     });
+    this.themeSub = this.themeService.theme$.subscribe(theme => {
+      this.isDark = theme === 'dark';
+    });
   }
 
   ngOnDestroy(): void {
     this.sub?.unsubscribe();
+    this.themeSub?.unsubscribe();
+  }
+
+  toggleTheme(): void {
+    this.themeService.toggle();
   }
 
   toggleMenu(): void {

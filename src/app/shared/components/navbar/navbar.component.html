@@ -7,26 +7,31 @@
     </a>
 
     <!-- Hamburger Toggle (mobile) -->
-    <button class="navbar-toggler" (click)="toggleMenu()" [attr.aria-expanded]="isMenuOpen">
-      <span class="toggler-bar"></span>
-      <span class="toggler-bar"></span>
-      <span class="toggler-bar"></span>
-    </button>
+    <div class="navbar-right-controls">
+      <button class="theme-toggle-btn" (click)="toggleTheme()" [attr.aria-label]="isDark ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro'">
+        <i [class]="isDark ? 'bi bi-sun-fill' : 'bi bi-moon-fill'"></i>
+      </button>
+      <button class="navbar-toggler" (click)="toggleMenu()" [attr.aria-expanded]="isMenuOpen">
+        <span class="toggler-bar"></span>
+        <span class="toggler-bar"></span>
+        <span class="toggler-bar"></span>
+      </button>
+    </div>
 
     <!-- Nav Links -->
     <div class="navbar-links" [class.show]="isMenuOpen">
       @if (isAuthenticated) {
-        <a routerLink="/dashboard" routerLinkActive="active" class="nav-link-custom" (click)="closeMenu()">
-          <i class="bi bi-grid-1x2-fill"></i>
-          <span>Dashboard</span>
-        </a>
-
         @if (isAdmin) {
-          <a routerLink="/attendance" routerLinkActive="active" class="nav-link-custom" (click)="closeMenu()">
-            <i class="bi bi-person-check-fill"></i>
-            <span>Registro</span>
+          <a routerLink="/dashboard" routerLinkActive="active" class="nav-link-custom" (click)="closeMenu()">
+            <i class="bi bi-grid-1x2-fill"></i>
+            <span>Dashboard</span>
           </a>
         }
+
+        <a routerLink="/attendance" routerLinkActive="active" class="nav-link-custom" (click)="closeMenu()">
+          <i class="bi bi-person-check-fill"></i>
+          <span>Registro</span>
+        </a>
 
         <div class="nav-user-section">
           <span class="nav-user-badge">

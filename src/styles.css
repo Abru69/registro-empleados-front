@@ -1,5 +1,5 @@
 /* =============================================
-   GLOBAL STYLES - Dark Premium Theme
+   GLOBAL STYLES - Dark/Light Theme System
    ============================================= */
 
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap');
@@ -13,11 +13,13 @@
   box-sizing: border-box;
 }
 
+/* ===== DARK THEME (default) ===== */
 :root {
   /* Color System */
   --color-bg: #0f172a;
   --color-bg-secondary: #1e293b;
   --color-surface: rgba(30, 41, 59, 0.6);
+  --color-surface-solid: #1e293b;
   --color-primary: #6366f1;
   --color-primary-light: #818cf8;
   --color-secondary: #8b5cf6;
@@ -29,6 +31,56 @@
   --color-text-secondary: #94a3b8;
   --color-text-muted: #64748b;
   --color-border: rgba(255, 255, 255, 0.06);
+  --color-border-hover: rgba(255, 255, 255, 0.12);
+
+  /* Cards & Surfaces */
+  --card-bg: rgba(30, 41, 59, 0.65);
+  --card-border: rgba(255, 255, 255, 0.08);
+  --card-shadow: 0 25px 60px rgba(0, 0, 0, 0.3);
+  --input-bg: rgba(15, 23, 42, 0.5);
+  --input-bg-focus: rgba(15, 23, 42, 0.7);
+  --input-placeholder: #475569;
+  --select-option-bg: rgb(30, 41, 59);
+
+  /* Navbar */
+  --navbar-bg: rgba(15, 23, 42, 0.85);
+  --navbar-border: rgba(255, 255, 255, 0.06);
+  --navbar-link-color: #94a3b8;
+  --navbar-link-hover-bg: rgba(99, 102, 241, 0.12);
+  --navbar-link-hover-border: rgba(99, 102, 241, 0.25);
+  --navbar-link-active-bg: linear-gradient(135deg, rgba(99, 102, 241, 0.3), rgba(6, 182, 212, 0.2));
+  --navbar-link-active-border: rgba(99, 102, 241, 0.4);
+  --navbar-user-color: #c4b5fd;
+  --navbar-user-bg: rgba(139, 92, 246, 0.1);
+  --navbar-user-border: rgba(139, 92, 246, 0.2);
+  --navbar-mobile-bg: rgba(15, 23, 42, 0.97);
+
+  /* Toast */
+  --toast-bg: rgba(30, 41, 59, 0.95);
+  --toast-border: rgba(255, 255, 255, 0.08);
+  --toast-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.05);
+
+  /* Scrollbar */
+  --scrollbar-track: rgba(15, 23, 42, 0.5);
+  --scrollbar-thumb: rgba(99, 102, 241, 0.3);
+  --scrollbar-thumb-hover: rgba(99, 102, 241, 0.5);
+
+  /* Misc */
+  --pattern-color: rgba(99, 102, 241, 0.08);
+  --overlay-bg: rgba(15, 23, 42, 0.8);
+  --filter-bg: rgba(15, 23, 42, 0.4);
+  --filter-border: rgba(255, 255, 255, 0.04);
+  --filter-input-bg: rgba(15, 23, 42, 0.6);
+  --filter-secondary-bg: rgba(255, 255, 255, 0.05);
+  --filter-secondary-border: rgba(255, 255, 255, 0.08);
+  --tab-hover-bg: rgba(255, 255, 255, 0.05);
+  --tab-active-bg: rgba(99, 102, 241, 0.15);
+  --tab-active-border: rgba(99, 102, 241, 0.3);
+  --table-header-bg: rgba(30, 41, 59, 0.8);
+  --table-border: rgba(255, 255, 255, 0.1);
+  --table-row-border: rgba(255, 255, 255, 0.05);
+  --color-scheme: dark;
+  --shape-opacity: 0.35;
 
   /* Typography */
   --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
@@ -63,6 +115,80 @@
   --ease-bounce: cubic-bezier(0.4, 0, 0.2, 1.2);
 }
 
+/* ===== LIGHT THEME ===== */
+[data-theme="light"] {
+  --color-bg: #f0f4f8;
+  --color-bg-secondary: #ffffff;
+  --color-surface: rgba(255, 255, 255, 0.8);
+  --color-surface-solid: #ffffff;
+  --color-primary: #4f46e5;
+  --color-primary-light: #6366f1;
+  --color-secondary: #7c3aed;
+  --color-accent: #0891b2;
+  --color-success: #059669;
+  --color-warning: #d97706;
+  --color-danger: #dc2626;
+  --color-text: #1e293b;
+  --color-text-secondary: #475569;
+  --color-text-muted: #94a3b8;
+  --color-border: rgba(0, 0, 0, 0.08);
+  --color-border-hover: rgba(0, 0, 0, 0.15);
+
+  /* Cards & Surfaces */
+  --card-bg: rgba(255, 255, 255, 0.85);
+  --card-border: rgba(0, 0, 0, 0.08);
+  --card-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+  --input-bg: rgba(241, 245, 249, 0.8);
+  --input-bg-focus: #ffffff;
+  --input-placeholder: #94a3b8;
+  --select-option-bg: #ffffff;
+
+  /* Navbar */
+  --navbar-bg: rgba(255, 255, 255, 0.85);
+  --navbar-border: rgba(0, 0, 0, 0.06);
+  --navbar-link-color: #475569;
+  --navbar-link-hover-bg: rgba(79, 70, 229, 0.08);
+  --navbar-link-hover-border: rgba(79, 70, 229, 0.2);
+  --navbar-link-active-bg: linear-gradient(135deg, rgba(79, 70, 229, 0.12), rgba(8, 145, 178, 0.1));
+  --navbar-link-active-border: rgba(79, 70, 229, 0.3);
+  --navbar-user-color: #7c3aed;
+  --navbar-user-bg: rgba(124, 58, 237, 0.08);
+  --navbar-user-border: rgba(124, 58, 237, 0.15);
+  --navbar-mobile-bg: rgba(255, 255, 255, 0.97);
+
+  /* Toast */
+  --toast-bg: rgba(255, 255, 255, 0.95);
+  --toast-border: rgba(0, 0, 0, 0.08);
+  --toast-shadow: 0 8px 32px rgba(0, 0, 0, 0.1), 0 0 0 1px rgba(0, 0, 0, 0.04);
+
+  /* Scrollbar */
+  --scrollbar-track: rgba(241, 245, 249, 0.8);
+  --scrollbar-thumb: rgba(79, 70, 229, 0.25);
+  --scrollbar-thumb-hover: rgba(79, 70, 229, 0.4);
+
+  /* Misc */
+  --pattern-color: rgba(79, 70, 229, 0.04);
+  --overlay-bg: rgba(255, 255, 255, 0.85);
+  --filter-bg: rgba(241, 245, 249, 0.6);
+  --filter-border: rgba(0, 0, 0, 0.04);
+  --filter-input-bg: rgba(255, 255, 255, 0.8);
+  --filter-secondary-bg: rgba(0, 0, 0, 0.03);
+  --filter-secondary-border: rgba(0, 0, 0, 0.08);
+  --tab-hover-bg: rgba(0, 0, 0, 0.04);
+  --tab-active-bg: rgba(79, 70, 229, 0.1);
+  --tab-active-border: rgba(79, 70, 229, 0.25);
+  --table-header-bg: rgba(241, 245, 249, 0.8);
+  --table-border: rgba(0, 0, 0, 0.08);
+  --table-row-border: rgba(0, 0, 0, 0.04);
+  --color-scheme: light;
+  --shape-opacity: 0.15;
+
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.08);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 10px 30px rgba(0, 0, 0, 0.08);
+  --shadow-xl: 0 20px 50px rgba(0, 0, 0, 0.1);
+}
+
 /* Base */
 html {
   font-size: 16px;
@@ -78,6 +204,8 @@ body {
   line-height: 1.6;
   min-height: 100vh;
   overflow-x: hidden;
+  transition: background-color 0.3s ease, color 0.3s ease;
+  color-scheme: var(--color-scheme);
 }
 
 /* Scrollbar */
@@ -87,16 +215,16 @@ body {
 }
 
 ::-webkit-scrollbar-track {
-  background: rgba(15, 23, 42, 0.5);
+  background: var(--scrollbar-track);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(99, 102, 241, 0.3);
+  background: var(--scrollbar-thumb);
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(99, 102, 241, 0.5);
+  background: var(--scrollbar-thumb-hover);
 }
 
 /* Selection */

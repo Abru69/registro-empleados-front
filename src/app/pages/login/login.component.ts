@@ -41,7 +41,8 @@ export class LoginComponent {
         this.isLoading = false;
         if (response.status === 'ok') {
           this.toastService.success(`¡Bienvenido, ${response.usuario}!`);
-          this.router.navigate(['/dashboard']);
+          const dest = response.rol === 'admin' ? '/dashboard' : '/attendance';
+          this.router.navigate([dest]);
         } else {
           this.toastService.error(response.mensaje || 'Credenciales incorrectas');
         }
