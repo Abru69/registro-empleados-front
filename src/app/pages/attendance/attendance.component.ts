@@ -80,11 +80,16 @@ export class AttendanceComponent implements OnInit, OnDestroy {
       return;
     }
 
+    const now = new Date();
+    const pad = (value: number) => value.toString().padStart(2, '0');
+    const fecha = `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}`;
+    const hora = `${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`;
+
     this.isRegistering = true;
     this.lastAction = accion;
     this.cdr.detectChanges();
 
-    this.attendanceService.registrar(nombreTrimmed, accion).subscribe({
+    this.attendanceService.registrar(nombreTrimmed, accion, fecha, hora).subscribe({
       next: (response) => {
         this.isRegistering = false;
         if (response.status === 'ok') {

@@ -50,10 +50,12 @@ export class AttendanceService {
 
   constructor(private http: HttpClient) {}
 
-  registrar(nombre: string, accion: 'entrada' | 'salida'): Observable<RegistroResponse> {
+  registrar(nombre: string, accion: 'entrada' | 'salida', fecha?: string, hora?: string): Observable<RegistroResponse> {
     const formData = new FormData();
     formData.append('nombre', nombre);
     formData.append('accion', accion);
+    if (fecha) formData.append('fecha', fecha);
+    if (hora) formData.append('hora', hora);
 
     return this.http.post<RegistroResponse>(`${this.apiUrl}/api/registrar`, formData);
   }
