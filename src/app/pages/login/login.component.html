@@ -7,73 +7,115 @@
     <div class="shape shape-4"></div>
   </div>
 
-  <div class="login-card">
-    <!-- Logo/Icon -->
-    <div class="login-header">
-      <div class="login-icon-wrapper">
-        <i class="bi bi-shield-lock-fill"></i>
+  <!-- Left panel – Branding -->
+  <div class="login-branding">
+    <div class="branding-inner">
+      <div class="brand-logo">
+        <div class="brand-icon-ring">
+          <i class="bi bi-clock-history"></i>
+        </div>
       </div>
-      <h1>Bienvenido</h1>
-      <p class="login-subtitle">Inicia sesión para acceder al sistema</p>
+      <h2 class="brand-name">AsistenciaPro</h2>
+      <p class="brand-tagline">Control de asistencia inteligente para tu equipo</p>
+
+      <div class="brand-features">
+        <div class="feature-item">
+          <div class="feature-dot"></div>
+          <span>Registro de entradas y salidas en tiempo real</span>
+        </div>
+        <div class="feature-item">
+          <div class="feature-dot"></div>
+          <span>Panel administrativo con reportes semanales</span>
+        </div>
+        <div class="feature-item">
+          <div class="feature-dot"></div>
+          <span>Gestión completa de empleados</span>
+        </div>
+      </div>
+
+      <div class="brand-footer-info">
+        <span class="live-badge">
+          <span class="live-dot"></span>
+          Sistema activo
+        </span>
+      </div>
     </div>
+  </div>
 
-    <!-- Form -->
-    <form (ngSubmit)="onSubmit()" class="login-form">
-      <!-- Usuario -->
-      <div class="input-group-custom">
-        <div class="input-icon">
-          <i class="bi bi-person-fill"></i>
+  <!-- Right panel – Form -->
+  <div class="login-panel">
+    <div class="login-card">
+      <!-- Header -->
+      <div class="login-header">
+        <div class="login-icon-wrapper">
+          <i class="bi bi-shield-lock-fill"></i>
         </div>
-        <input
-          type="text"
-          id="usuario"
-          [(ngModel)]="usuario"
-          name="usuario"
-          placeholder="Usuario"
-          autocomplete="username"
-          [disabled]="isLoading"
-          required
-        />
+        <h1>Bienvenido</h1>
+        <p class="login-subtitle">Inicia sesión para acceder al sistema</p>
       </div>
 
-      <!-- Password -->
-      <div class="input-group-custom">
-        <div class="input-icon">
-          <i class="bi bi-key-fill"></i>
+      <!-- Form -->
+      <form (ngSubmit)="onSubmit()" class="login-form">
+        <!-- Usuario -->
+        <div class="field-group">
+          <label for="usuario" class="field-label">
+            <i class="bi bi-person-fill"></i>
+            Usuario
+          </label>
+          <div class="input-group-custom">
+            <input
+              type="text"
+              id="usuario"
+              [(ngModel)]="usuario"
+              name="usuario"
+              placeholder="Ingresa tu usuario"
+              autocomplete="username"
+              [disabled]="isLoading"
+              required
+            />
+          </div>
         </div>
-        <input
-          [type]="showPassword ? 'text' : 'password'"
-          id="password"
-          [(ngModel)]="password"
-          name="password"
-          placeholder="Contraseña"
-          autocomplete="current-password"
-          [disabled]="isLoading"
-          required
-        />
-        <button type="button" class="toggle-password" (click)="togglePassword()">
-          <i class="bi" [class]="showPassword ? 'bi-eye-slash-fill' : 'bi-eye-fill'"></i>
+
+        <!-- Password -->
+        <div class="field-group">
+          <label for="password" class="field-label">
+            <i class="bi bi-key-fill"></i>
+            Contraseña
+          </label>
+          <div class="input-group-custom">
+            <input
+              [type]="showPassword ? 'text' : 'password'"
+              id="password"
+              [(ngModel)]="password"
+              name="password"
+              placeholder="Ingresa tu contraseña"
+              autocomplete="current-password"
+              [disabled]="isLoading"
+              required
+            />
+            <button type="button" class="toggle-password" (click)="togglePassword()" [attr.aria-label]="showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'">
+              <i class="bi" [class]="showPassword ? 'bi-eye-slash-fill' : 'bi-eye-fill'"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Submit -->
+        <button type="submit" class="login-btn" [disabled]="isLoading" id="login-submit-btn">
+          @if (isLoading) {
+            <span class="spinner-border spinner-border-sm me-2"></span>
+            Verificando...
+          } @else {
+            <i class="bi bi-box-arrow-in-right me-2"></i>
+            Iniciar Sesión
+          }
         </button>
+      </form>
+
+      <!-- Footer -->
+      <div class="login-footer">
+        <i class="bi bi-shield-check me-1"></i>
+        <span>Acceso seguro · Solo personal autorizado</span>
       </div>
-
-      <!-- Submit -->
-      <button type="submit" class="login-btn" [disabled]="isLoading">
-        @if (isLoading) {
-          <span class="spinner-border spinner-border-sm me-2"></span>
-          Ingresando...
-        } @else {
-          <i class="bi bi-box-arrow-in-right me-2"></i>
-          Iniciar Sesión
-        }
-      </button>
-    </form>
-
-    <!-- Footer -->
-    <div class="login-footer">
-      <p>
-        <i class="bi bi-clock-history me-1"></i>
-        Sistema de Control de Asistencia
-      </p>
     </div>
   </div>
 </div>

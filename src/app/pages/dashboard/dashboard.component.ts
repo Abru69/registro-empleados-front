@@ -72,6 +72,12 @@ export class DashboardComponent implements OnInit, OnDestroy {
   nuevoEmpleadoNombre = '';
   isAddingEmpleado = false;
 
+  // Delete modal state
+  showDeleteModal = false;
+  deleteTargetId: number | null = null;
+  deleteTargetName = '';
+  isDeletingEmpleado = false;
+
   private cdr = inject(ChangeDetectorRef);
   private themeService = inject(ThemeService);
   private themeSub!: Subscription;
@@ -453,6 +459,27 @@ export class DashboardComponent implements OnInit, OnDestroy {
     return new Date().toISOString().split('T')[0];
   }
 
+  // Today label for header
+  get todayLabel(): string {
+    return new Date().toLocaleDateString('es-MX', {
+      weekday: 'short', year: 'numeric', month: 'short', day: 'numeric'
+    });
+  }
+
+  // Empleados únicos con registro hoy
+  get empleadosHoy(): number {
+    const today = new Date().toISOString().split('T')[0];
+    const uniqueNames = new Set(
+      this.attendanceRows.filter(r => r.fecha === today).map(r => r.nombre)
+    );
+    return uniqueNames.size;
+  }
+
+  // Total empleados de la lista de empleados gestionados
+  get totalEmpleadosActivos(): number {
+    return this.empleados.length > 0 ? this.empleados.length : this.totalEmpleados;
+  }
+
   // Enter key handler
   onAttendanceKeyPress(event: KeyboardEvent): void {
     if (event.key === 'Enter') this.filterAttendance();
@@ -535,19 +562,42 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
   deleteEmpleado(id: number): void {
-    if (!confirm('¿Seguro que deseas eliminar a este empleado?')) return;
-    
-    this.empleadoService.deleteEmpleado(id).subscribe({
+    const emp = this.empleados.find(e => e.id === id);
+    this.deleteTargetId = id;
+    this.deleteTargetName = emp?.nombre ?? 'este empleado';
+    this.showDeleteModal = true;
+  }
+
+  cancelDelete(): void {
+    this.showDeleteModal = false;
+    this.deleteTargetId = null;
+    this.deleteTargetName = '';
+    this.isDeletingEmpleado = false;
+  }
+
+  confirmDelete(): void {
+    if (this.deleteTargetId === null) return;
+    this.isDeletingEmpleado = true;
+
+    this.empleadoService.deleteEmpleado(this.deleteTargetId).subscribe({
       next: (res) => {
+        this.isDeletingEmpleado = false;
+        this.showDeleteModal = false;
         if (res.success) {
-          this.toastService.success('Empleado eliminado');
-          this.loadEmpleados();
+          this.toastService.success(`Empleado "${this.deleteTargetName}" eliminado`);
+          this.empleados = this.empleados.filter(e => e.id !== this.deleteTargetId);
+          this.cdr.detectChanges();
         } else {
-          this.toastService.error('Error al eliminar');
+          this.toastService.error(res.message || 'Error al eliminar');
         }
+        this.deleteTargetId = null;
+        this.deleteTargetName = '';
       },
       error: () => {
+        this.isDeletingEmpleado = false;
+        this.showDeleteModal = false;
         this.toastService.error('Error del servidor');
+        this.deleteTargetId = null;
       }
     });
   }

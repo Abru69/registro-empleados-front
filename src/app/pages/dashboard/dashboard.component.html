@@ -1,172 +1,223 @@
 <div class="dashboard-page">
-  <!-- Header -->
+
+  <!-- ===== Header ===== -->
   <div class="dashboard-header">
-    <div class="header-text">
-      <h1>
-        <i class="bi bi-grid-1x2-fill me-2"></i>
-        Panel de Asistencias
-      </h1>
-      <p class="header-subtitle">Visualiza y gestiona los registros de asistencia</p>
+    <div class="header-left">
+      <div class="header-icon">
+        <i class="bi bi-grid-1x2-fill"></i>
+      </div>
+      <div class="header-text">
+        <h1>Panel de Asistencias</h1>
+        <p class="header-subtitle">Visualiza y gestiona los registros en tiempo real</p>
+      </div>
+    </div>
+    <div class="header-right">
+      <span class="live-indicator">
+        <span class="live-dot"></span>
+        En tiempo real
+      </span>
+      <span class="header-date">{{ todayLabel }}</span>
     </div>
   </div>
 
-  <!-- Stats Cards -->
+  <!-- ===== Stats Cards ===== -->
   <div class="stats-grid">
+    <!-- Empleados totales -->
     <div class="stat-card stat-employees">
-      <div class="stat-icon-wrapper">
-        <i class="bi bi-people-fill"></i>
+      <div class="stat-top">
+        <div class="stat-icon-wrapper">
+          <i class="bi bi-people-fill"></i>
+        </div>
+        <span class="stat-badge badge-accent">Total</span>
       </div>
-      <div class="stat-info">
-        <span class="stat-value">{{ totalEmpleados }}</span>
-        <span class="stat-label">Empleados</span>
-      </div>
+      <div class="stat-value">{{ totalEmpleadosActivos }}</div>
+      <div class="stat-label">Empleados registrados</div>
     </div>
 
+    <!-- Registros hoy -->
     <div class="stat-card stat-today">
-      <div class="stat-icon-wrapper">
-        <i class="bi bi-calendar-check-fill"></i>
+      <div class="stat-top">
+        <div class="stat-icon-wrapper">
+          <i class="bi bi-calendar-check-fill"></i>
+        </div>
+        <span class="stat-badge badge-success">Hoy</span>
       </div>
-      <div class="stat-info">
-        <span class="stat-value">{{ registrosHoy }}</span>
-        <span class="stat-label">Registros Hoy</span>
-      </div>
+      <div class="stat-value">{{ registrosHoy }}</div>
+      <div class="stat-label">Registros de hoy</div>
     </div>
 
+    <!-- Empleados activos hoy -->
+    <div class="stat-card stat-active">
+      <div class="stat-top">
+        <div class="stat-icon-wrapper">
+          <i class="bi bi-person-check-fill"></i>
+        </div>
+        <span class="stat-badge badge-primary">Activos</span>
+      </div>
+      <div class="stat-value">{{ empleadosHoy }}</div>
+      <div class="stat-label">Empleados presentes hoy</div>
+    </div>
+
+    <!-- Sin salida -->
     <div class="stat-card stat-pending">
-      <div class="stat-icon-wrapper">
-        <i class="bi bi-clock-history"></i>
+      <div class="stat-top">
+        <div class="stat-icon-wrapper">
+          <i class="bi bi-clock-history"></i>
+        </div>
+        <span class="stat-badge badge-warning">Pendiente</span>
       </div>
-      <div class="stat-info">
-        <span class="stat-value">{{ sinSalida }}</span>
-        <span class="stat-label">Sin Salida</span>
-      </div>
+      <div class="stat-value">{{ sinSalida }}</div>
+      <div class="stat-label">Sin registrar salida</div>
     </div>
   </div>
 
-  <!-- Nav Tabs -->
-  <div class="dashboard-tabs">
-    <button class="tab-btn" [class.active]="activeTab === 'empleados'" (click)="setTab('empleados')">
-      <i class="bi bi-people-fill me-2"></i>Empleados
+  <!-- ===== Tabs ===== -->
+  <div class="dashboard-tabs" role="tablist">
+    <button
+      class="tab-btn"
+      [class.active]="activeTab === 'empleados'"
+      (click)="setTab('empleados')"
+      role="tab"
+      id="tab-empleados"
+    >
+      <i class="bi bi-people-fill"></i>
+      <span>Empleados</span>
+      <span class="tab-count">{{ totalEmpleadosActivos }}</span>
     </button>
-    <button class="tab-btn" [class.active]="activeTab === 'registros'" (click)="setTab('registros')">
-      <i class="bi bi-card-checklist me-2"></i>Registros
+    <button
+      class="tab-btn"
+      [class.active]="activeTab === 'registros'"
+      (click)="setTab('registros')"
+      role="tab"
+      id="tab-registros"
+    >
+      <i class="bi bi-card-checklist"></i>
+      <span>Registros</span>
+      <span class="tab-count">{{ attendanceRows.length }}</span>
     </button>
-    <button class="tab-btn" [class.active]="activeTab === 'semanales'" (click)="setTab('semanales')">
-      <i class="bi bi-calendar-range me-2"></i>Horas Semanales
+    <button
+      class="tab-btn"
+      [class.active]="activeTab === 'semanales'"
+      (click)="setTab('semanales')"
+      role="tab"
+      id="tab-semanales"
+    >
+      <i class="bi bi-calendar-range"></i>
+      <span>Horas Semanales</span>
+      <span class="tab-count">{{ weeklyRows.length }}</span>
     </button>
   </div>
 
-  <!-- Empleados Section -->
+  <!-- ===== EMPLEADOS SECTION ===== -->
   <div class="section-card" [class.d-none]="activeTab !== 'empleados'">
     <div class="section-header">
-      <h2>
-        <i class="bi bi-person-badge-fill me-2"></i>
-        Gestión de Empleados
-      </h2>
+      <div class="section-title">
+        <i class="bi bi-person-badge-fill"></i>
+        <h2>Gestión de Empleados</h2>
+      </div>
     </div>
 
-    <div class="add-empleado-form">
-      <div class="filter-field w-50">
-        <label for="nuevoEmpleado"><i class="bi bi-person-plus-fill me-1"></i>Añadir Empleado</label>
-        <div class="d-flex gap-2">
-          <input type="text" id="nuevoEmpleado" [(ngModel)]="nuevoEmpleadoNombre" placeholder="Nombre completo" (keypress)="$event.key === 'Enter' ? addEmpleado() : null" />
-          <button class="btn-filter-primary whitespace-nowrap" (click)="addEmpleado()" [disabled]="isAddingEmpleado">
-            @if(isAddingEmpleado) { <span class="spinner-border spinner-border-sm"></span> } @else { <i class="bi bi-plus-lg"></i> Añadir }
+    <!-- Add Employee Form -->
+    <div class="add-employee-panel">
+      <div class="add-employee-form">
+        <label for="nuevoEmpleado" class="form-label">
+          <i class="bi bi-person-plus-fill"></i>
+          Nombre completo
+        </label>
+        <div class="add-employee-row">
+          <input
+            type="text"
+            id="nuevoEmpleado"
+            [(ngModel)]="nuevoEmpleadoNombre"
+            placeholder="Ej. Juan García López"
+            (keypress)="$event.key === 'Enter' ? addEmpleado() : null"
+          />
+          <button class="btn-add-employee" (click)="addEmpleado()" [disabled]="isAddingEmpleado" id="btn-add-empleado">
+            @if (isAddingEmpleado) {
+              <span class="spinner-border spinner-border-sm"></span>
+            } @else {
+              <i class="bi bi-plus-lg"></i>
+            }
+            <span>Añadir</span>
           </button>
         </div>
       </div>
     </div>
 
-    <div class="empleados-list mt-4">
+    <!-- Employee List -->
+    <div class="empleados-list">
       @if (isLoadingEmpleadosList) {
-        <div class="grid-loading"><div class="loading-spinner"></div><span>Cargando empleados...</span></div>
+        <div class="grid-loading">
+          <div class="loading-spinner"></div>
+          <span>Cargando empleados...</span>
+        </div>
       } @else if (empleados.length === 0) {
-        <div class="text-center text-muted p-4">No hay empleados registrados. Añade uno arriba.</div>
+        <div class="empty-state">
+          <div class="empty-icon"><i class="bi bi-people"></i></div>
+          <p class="empty-title">Sin empleados registrados</p>
+          <p class="empty-sub">Añade el primer empleado usando el formulario de arriba</p>
+        </div>
       } @else {
-        <div class="table-responsive">
-          <table class="table table-hover align-middle custom-table">
-            <thead>
-              <tr>
-                <th>ID</th>
-                <th>Nombre</th>
-                <th class="text-end">Acciones</th>
-              </tr>
-            </thead>
-            <tbody>
-              @for (emp of empleados; track emp.id) {
-                <tr>
-                  <td>#{{emp.id}}</td>
-                  <td class="fw-bold">{{emp.nombre}}</td>
-                  <td class="text-end">
-                    <button class="btn btn-sm btn-danger custom-btn-danger" (click)="deleteEmpleado(emp.id)">
-                      <i class="bi bi-trash-fill"></i> Eliminar
-                    </button>
-                  </td>
-                </tr>
-              }
-            </tbody>
-          </table>
+        <div class="empleados-grid">
+          @for (emp of empleados; track emp.id) {
+            <div class="employee-card">
+              <div class="employee-avatar">
+                {{ emp.nombre.charAt(0).toUpperCase() }}
+              </div>
+              <div class="employee-info">
+                <span class="employee-name">{{ emp.nombre }}</span>
+                <span class="employee-id">#{{ emp.id }}</span>
+              </div>
+              <button
+                class="btn-delete-employee"
+                (click)="deleteEmpleado(emp.id)"
+                title="Eliminar empleado"
+                [id]="'btn-delete-' + emp.id"
+              >
+                <i class="bi bi-trash-fill"></i>
+              </button>
+            </div>
+          }
         </div>
       }
     </div>
   </div>
 
-  <!-- Attendance Records Section -->
+  <!-- ===== ATTENDANCE RECORDS SECTION ===== -->
   <div class="section-card" [class.d-none]="activeTab !== 'registros'">
     <div class="section-header">
-      <h2>
-        <i class="bi bi-table me-2"></i>
-        Registros de Asistencia
-      </h2>
+      <div class="section-title">
+        <i class="bi bi-table"></i>
+        <h2>Registros de Asistencia</h2>
+      </div>
+      <button class="btn-export" (click)="exportAttendance()" id="btn-export-attendance">
+        <i class="bi bi-file-earmark-spreadsheet"></i>
+        Exportar CSV
+      </button>
     </div>
 
     <!-- Filters -->
     <div class="filter-section">
       <div class="filter-grid">
         <div class="filter-field">
-          <label for="filterNombre">
-            <i class="bi bi-search me-1"></i>Nombre
-          </label>
-          <input
-            type="text"
-            id="filterNombre"
-            [(ngModel)]="filterNombre"
-            placeholder="Buscar por nombre..."
-            (keypress)="onAttendanceKeyPress($event)"
-          />
+          <label for="filterNombre"><i class="bi bi-search"></i> Empleado</label>
+          <input type="text" id="filterNombre" [(ngModel)]="filterNombre" placeholder="Buscar por nombre..." (keypress)="onAttendanceKeyPress($event)" />
         </div>
         <div class="filter-field">
-          <label for="filterDesde">
-            <i class="bi bi-calendar-event me-1"></i>Desde
-          </label>
-          <input
-            type="date"
-            id="filterDesde"
-            [(ngModel)]="filterDesde"
-            [max]="todayMax"
-          />
+          <label for="filterDesde"><i class="bi bi-calendar-event"></i> Desde</label>
+          <input type="date" id="filterDesde" [(ngModel)]="filterDesde" [max]="todayMax" />
         </div>
         <div class="filter-field">
-          <label for="filterHasta">
-            <i class="bi bi-calendar-event me-1"></i>Hasta
-          </label>
-          <input
-            type="date"
-            id="filterHasta"
-            [(ngModel)]="filterHasta"
-            [max]="todayMax"
-          />
+          <label for="filterHasta"><i class="bi bi-calendar-event"></i> Hasta</label>
+          <input type="date" id="filterHasta" [(ngModel)]="filterHasta" [max]="todayMax" />
         </div>
       </div>
       <div class="filter-actions">
         <button class="btn-filter-primary" (click)="filterAttendance()">
-          <i class="bi bi-funnel-fill me-1"></i>Buscar
+          <i class="bi bi-funnel-fill"></i> Buscar
         </button>
         <button class="btn-filter-secondary" (click)="clearAttendanceFilters()">
-          <i class="bi bi-x-circle me-1"></i>Limpiar
-        </button>
-        <button class="btn-filter-export" (click)="exportAttendance()">
-          <i class="bi bi-file-earmark-spreadsheet me-1"></i>Exportar CSV
+          <i class="bi bi-x-circle"></i> Limpiar
         </button>
       </div>
     </div>
@@ -197,50 +248,37 @@
     </div>
   </div>
 
-  <!-- Weekly Hours Section -->
+  <!-- ===== WEEKLY HOURS SECTION ===== -->
   <div class="section-card" [class.d-none]="activeTab !== 'semanales'">
     <div class="section-header">
-      <h2>
-        <i class="bi bi-bar-chart-fill me-2"></i>
-        Horas Semanales
-      </h2>
+      <div class="section-title">
+        <i class="bi bi-bar-chart-fill"></i>
+        <h2>Horas Semanales</h2>
+      </div>
+      <button class="btn-export" (click)="exportWeekly()" id="btn-export-weekly">
+        <i class="bi bi-file-earmark-spreadsheet"></i>
+        Exportar CSV
+      </button>
     </div>
 
     <!-- Filters -->
     <div class="filter-section">
       <div class="filter-grid">
         <div class="filter-field">
-          <label for="filterNombreSemanal">
-            <i class="bi bi-search me-1"></i>Empleado
-          </label>
-          <input
-            type="text"
-            id="filterNombreSemanal"
-            [(ngModel)]="filterNombreSemanal"
-            placeholder="Buscar por nombre..."
-            (keypress)="onWeeklyKeyPress($event)"
-          />
+          <label for="filterNombreSemanal"><i class="bi bi-search"></i> Empleado</label>
+          <input type="text" id="filterNombreSemanal" [(ngModel)]="filterNombreSemanal" placeholder="Buscar..." (keypress)="onWeeklyKeyPress($event)" />
         </div>
         <div class="filter-field">
-          <label for="filterSemana">
-            <i class="bi bi-calendar-week me-1"></i>Semana
-          </label>
-          <input
-            type="week"
-            id="filterSemana"
-            [(ngModel)]="filterSemana"
-          />
+          <label for="filterSemana"><i class="bi bi-calendar-week"></i> Semana</label>
+          <input type="week" id="filterSemana" [(ngModel)]="filterSemana" />
         </div>
       </div>
       <div class="filter-actions">
         <button class="btn-filter-primary" (click)="filterWeekly()">
-          <i class="bi bi-funnel-fill me-1"></i>Filtrar
+          <i class="bi bi-funnel-fill"></i> Filtrar
         </button>
         <button class="btn-filter-secondary" (click)="clearWeeklyFilters()">
-          <i class="bi bi-x-circle me-1"></i>Limpiar
-        </button>
-        <button class="btn-filter-export" (click)="exportWeekly()">
-          <i class="bi bi-file-earmark-spreadsheet me-1"></i>Exportar CSV
+          <i class="bi bi-x-circle"></i> Limpiar
         </button>
       </div>
     </div>
@@ -270,4 +308,35 @@
       />
     </div>
   </div>
+
 </div>
+
+<!-- ===== DELETE CONFIRMATION MODAL ===== -->
+@if (showDeleteModal) {
+  <div class="modal-backdrop" (click)="cancelDelete()">
+    <div class="modal-box" (click)="$event.stopPropagation()" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+      <div class="modal-icon-wrap">
+        <i class="bi bi-trash3-fill"></i>
+      </div>
+      <h3 id="modal-title" class="modal-title">¿Eliminar empleado?</h3>
+      <p class="modal-desc">
+        Estás a punto de eliminar a <strong>{{ deleteTargetName }}</strong>.
+        Esta acción eliminará todos sus registros y no se puede deshacer.
+      </p>
+      <div class="modal-actions">
+        <button class="modal-btn modal-btn-cancel" (click)="cancelDelete()" id="btn-cancel-delete">
+          <i class="bi bi-x-lg"></i>
+          Cancelar
+        </button>
+        <button class="modal-btn modal-btn-confirm" (click)="confirmDelete()" [disabled]="isDeletingEmpleado" id="btn-confirm-delete">
+          @if (isDeletingEmpleado) {
+            <span class="spinner-border spinner-border-sm"></span>
+          } @else {
+            <i class="bi bi-trash3-fill"></i>
+          }
+          Eliminar
+        </button>
+      </div>
+    </div>
+  </div>
+}

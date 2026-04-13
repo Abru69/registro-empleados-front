@@ -1,9 +1,15 @@
 <nav class="navbar-custom" [class.open]="isMenuOpen">
   <div class="navbar-inner">
+
     <!-- Brand -->
     <a routerLink="/" class="navbar-brand" (click)="closeMenu()">
-      <i class="bi bi-clock-history brand-icon"></i>
-      <span class="brand-text">AsistenciaPro</span>
+      <div class="brand-icon-wrap">
+        <i class="bi bi-clock-history brand-icon"></i>
+      </div>
+      <div class="brand-info">
+        <span class="brand-text">AsistenciaPro</span>
+        <span class="brand-sub">Sistema de Asistencia</span>
+      </div>
     </a>
 
     <!-- Desktop Nav Links -->
@@ -19,12 +25,13 @@
           <i class="bi bi-person-check-fill"></i>
           <span>Registro</span>
         </a>
+        <div class="nav-separator"></div>
         <div class="nav-user-section">
           <span class="nav-user-badge">
-            <i class="bi bi-person-circle"></i>
+            <span class="user-avatar">{{ userName.charAt(0).toUpperCase() }}</span>
             {{ userName }}
           </span>
-          <button class="nav-logout-btn" (click)="logout()">
+          <button class="nav-logout-btn" (click)="logout()" title="Cerrar sesión">
             <i class="bi bi-box-arrow-right"></i>
             <span>Salir</span>
           </button>
@@ -41,51 +48,72 @@
       }
     </div>
 
-    <!-- Hamburger Toggle (mobile) -->
+    <!-- Right controls -->
     <div class="navbar-right-controls">
-      <button class="theme-toggle-btn" (click)="toggleTheme()" [attr.aria-label]="isDark ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro'">
+      <button
+        class="theme-toggle-btn"
+        (click)="toggleTheme()"
+        [attr.aria-label]="isDark ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro'"
+        [title]="isDark ? 'Modo claro' : 'Modo oscuro'"
+      >
         <i [class]="isDark ? 'bi bi-sun-fill' : 'bi bi-moon-fill'"></i>
       </button>
-      <button class="navbar-toggler" (click)="toggleMenu()" [attr.aria-expanded]="isMenuOpen">
+      <button class="navbar-toggler" (click)="toggleMenu()" [attr.aria-expanded]="isMenuOpen" aria-label="Abrir menú">
         <span class="toggler-bar"></span>
         <span class="toggler-bar"></span>
         <span class="toggler-bar"></span>
       </button>
     </div>
+
   </div>
 </nav>
 
-<!-- Mobile overlay — outside <nav> to escape backdrop-filter stacking context -->
+<!-- Mobile overlay -->
 <div class="navbar-mobile-overlay" [class.show]="isMenuOpen">
-  @if (isAuthenticated) {
-    @if (isAdmin) {
-      <a routerLink="/dashboard" routerLinkActive="active" class="nav-link-custom" (click)="closeMenu()">
-        <i class="bi bi-grid-1x2-fill"></i>
-        <span>Dashboard</span>
+  <div class="mobile-brand">
+    <div class="brand-icon-wrap">
+      <i class="bi bi-clock-history brand-icon"></i>
+    </div>
+    <span class="brand-text">AsistenciaPro</span>
+  </div>
+
+  <div class="mobile-links">
+    @if (isAuthenticated) {
+      @if (isAdmin) {
+        <a routerLink="/dashboard" routerLinkActive="active" class="nav-link-custom" (click)="closeMenu()">
+          <i class="bi bi-grid-1x2-fill"></i>
+          <span>Dashboard</span>
+        </a>
+      }
+      <a routerLink="/attendance" routerLinkActive="active" class="nav-link-custom" (click)="closeMenu()">
+        <i class="bi bi-person-check-fill"></i>
+        <span>Registro</span>
+      </a>
+    } @else {
+      <a routerLink="/login" routerLinkActive="active" class="nav-link-custom" (click)="closeMenu()">
+        <i class="bi bi-box-arrow-in-right"></i>
+        <span>Iniciar Sesión</span>
+      </a>
+      <a routerLink="/attendance" routerLinkActive="active" class="nav-link-custom" (click)="closeMenu()">
+        <i class="bi bi-person-check-fill"></i>
+        <span>Registro</span>
       </a>
     }
-    <a routerLink="/attendance" routerLinkActive="active" class="nav-link-custom" (click)="closeMenu()">
-      <i class="bi bi-person-check-fill"></i>
-      <span>Registro</span>
-    </a>
-    <div class="nav-user-section">
-      <span class="nav-user-badge">
-        <i class="bi bi-person-circle"></i>
-        {{ userName }}
-      </span>
-      <button class="nav-logout-btn" (click)="logout()">
+  </div>
+
+  @if (isAuthenticated) {
+    <div class="mobile-user-section">
+      <div class="mobile-user-info">
+        <div class="mobile-avatar">{{ userName.charAt(0).toUpperCase() }}</div>
+        <div>
+          <div class="mobile-username">{{ userName }}</div>
+          <div class="mobile-role">{{ isAdmin ? 'Administrador' : 'Empleado' }}</div>
+        </div>
+      </div>
+      <button class="nav-logout-btn mobile-logout" (click)="logout()">
         <i class="bi bi-box-arrow-right"></i>
-        <span>Salir</span>
+        <span>Cerrar Sesión</span>
       </button>
     </div>
-  } @else {
-    <a routerLink="/login" routerLinkActive="active" class="nav-link-custom" (click)="closeMenu()">
-      <i class="bi bi-box-arrow-in-right"></i>
-      <span>Iniciar Sesión</span>
-    </a>
-    <a routerLink="/attendance" routerLinkActive="active" class="nav-link-custom" (click)="closeMenu()">
-      <i class="bi bi-person-check-fill"></i>
-      <span>Registro</span>
-    </a>
   }
 </div>

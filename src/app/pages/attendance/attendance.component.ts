@@ -17,6 +17,8 @@ export class AttendanceComponent implements OnInit, OnDestroy {
   horaActual = '';
   fechaActual = '';
   isRegistering = false;
+  registrationSuccess = false;
+  private successTimer: ReturnType<typeof setTimeout> | null = null;
   lastAction: 'entrada' | 'salida' | null = null;
   private clockInterval: ReturnType<typeof setInterval> | null = null;
   empleados: Empleado[] = [];
@@ -54,6 +56,7 @@ export class AttendanceComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     if (this.clockInterval) clearInterval(this.clockInterval);
+    if (this.successTimer) clearTimeout(this.successTimer);
   }
 
   private updateClock(): void {
@@ -95,13 +98,21 @@ export class AttendanceComponent implements OnInit, OnDestroy {
         if (response.status === 'ok') {
           this.toastService.success(response.mensaje);
           this.nombre = '';
+          this.registrationSuccess = true;
+          if (this.successTimer) clearTimeout(this.successTimer);
+          this.successTimer = setTimeout(() => {
+            this.registrationSuccess = false;
+            this.cdr.detectChanges();
+          }, 3500);
         } else {
           this.toastService.error(response.mensaje);
+          this.registrationSuccess = false;
         }
         this.cdr.detectChanges();
       },
       error: (_err: unknown) => {
         this.isRegistering = false;
+        this.registrationSuccess = false;
         this.toastService.error('Error al registrar. Intenta de nuevo.');
         this.cdr.detectChanges();
       }

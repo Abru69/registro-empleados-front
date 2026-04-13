@@ -13,9 +13,11 @@ export class ToastService {
 
   show(text: string, type: 'success' | 'error' | 'warning' | 'info' = 'info', duration = 4000): void {
     const id = ++this.counter;
-    this.toasts.push({ id, text, type });
-
-    setTimeout(() => this.remove(id), duration);
+    // Defer mutation to next tick to avoid NG0100 ExpressionChangedAfterItHasBeenCheckedError
+    setTimeout(() => {
+      this.toasts.push({ id, text, type });
+      setTimeout(() => this.remove(id), duration);
+    });
   }
 
   success(text: string, duration = 4000): void {

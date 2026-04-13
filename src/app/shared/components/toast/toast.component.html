@@ -1,6 +1,6 @@
 <div class="toast-container">
   @for (toast of toastService.toasts; track toast.id) {
-    <div class="toast-item" [class]="'toast-' + toast.type" (click)="dismiss(toast.id)">
+    <div class="toast-item" [ngClass]="'toast-' + toast.type" (click)="dismiss(toast.id)">
       <div class="toast-icon">
         <i class="bi" [class]="getIcon(toast.type)"></i>
       </div>
