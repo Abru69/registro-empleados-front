@@ -35,7 +35,7 @@ export class NotificationService {
       this.eventSource.close();
     }
 
-    const url = `${environment.apiUrl}/notifications?token=${token}`;
+    const url = `${environment.apiUrl}/api/notifications?token=${token}`;
     this.eventSource = new EventSource(url);
 
     this.eventSource.onmessage = (event) => {
