@@ -11,6 +11,8 @@ import {
 import { EmpleadoService, Empleado } from '@core/services/empleado.service';
 import { ToastService } from '@shared/components/toast/toast.service';
 import { ThemeService } from '@core/services/theme.service';
+import { NotificationService, AppNotification } from '@core/services/notification.service';
+import { AuthService } from '@core/services/auth.service';
 import { Subscription } from 'rxjs';
 
 @Component({
@@ -56,7 +58,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
   // Auto-refresh
-  private refreshInterval: ReturnType<typeof setInterval> | null = null;
   private weeklyRefreshInterval: ReturnType<typeof setInterval> | null = null;
   private lastAttendanceSig = '';
   private lastWeeklySig = '';
@@ -103,7 +104,9 @@ export class DashboardComponent implements OnInit, OnDestroy {
   constructor(
     private attendanceService: AttendanceService,
     private empleadoService: EmpleadoService,
-    private toastService: ToastService
+    private toastService: ToastService,
+    private notificationService: NotificationService,
+    private authService: AuthService
   ) {}
 
   ngOnInit(): void {
@@ -122,6 +125,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.stopAutoRefresh();
     this.themeSub?.unsubscribe();
+    this.notificationService.disconnect();
     document.removeEventListener('visibilitychange', this.handleVisibility);
   }
 
@@ -362,12 +366,24 @@ export class DashboardComponent implements OnInit, OnDestroy {
   // ---- Misc & View logic ---- //
 
   private startAutoRefresh(): void {
-    this.refreshInterval = setInterval(() => this.loadAttendance(true), 5000);
-    this.weeklyRefreshInterval = setInterval(() => this.loadWeekly(true), 10000);
+    this.weeklyRefreshInterval = setInterval(() => {
+      this.loadAttendance(true);
+      if (this.activeTab === 'semanales') {
+        this.loadWeekly(true);
+      }
+    }, 60000);
+
+    const token = this.authService.currentUser?.token;
+    if (token) {
+      this.notificationService.connect(token);
+      this.notificationService.notifications$.subscribe((notif: AppNotification) => {
+        this.toastService.success(notif.mensaje);
+        this.loadAttendance(true);
+      });
+    }
   }
 
   private stopAutoRefresh(): void {
-    if (this.refreshInterval) clearInterval(this.refreshInterval);
     if (this.weeklyRefreshInterval) clearInterval(this.weeklyRefreshInterval);
   }
 
