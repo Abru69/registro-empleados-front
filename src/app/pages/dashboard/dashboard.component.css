@@ -947,7 +947,7 @@
   cursor: not-allowed;
 }
 
-.page-info {
+  .page-info {
   font-size: 0.85rem;
   font-weight: 500;
   color: var(--color-text-secondary);
@@ -960,4 +960,205 @@
     padding: 0.7rem 0.75rem;
     font-size: 0.8rem;
   }
+}
+
+/* ===== STAT MODAL ===== */
+.stat-card:active {
+  transform: scale(0.98);
+}
+
+.modal-stat-box {
+  max-width: 480px;
+  padding: 0;
+  overflow: hidden;
+  align-items: stretch;
+  text-align: left;
+  gap: 0;
+}
+
+.modal-header-stat {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  padding: 1.25rem 1.5rem;
+  padding-right: 3.5rem; /* Space for absolute close button */
+  border-bottom: 1px solid var(--color-border);
+  background: var(--filter-secondary-bg);
+  position: relative;
+}
+
+.modal-header-stat .modal-icon-wrap {
+  width: 3.2rem;
+  height: 3.2rem;
+  border-radius: 0.85rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.35rem;
+  color: #fff;
+  flex-shrink: 0;
+  margin-bottom: 0; /* Reset from base modal-icon-wrap */
+  border: none; /* Reset from base modal-icon-wrap */
+}
+
+.modal-header-stat .badge-accent { background: var(--gradient-accent); }
+.modal-header-stat .badge-success { background: var(--gradient-success); }
+.modal-header-stat .badge-primary { background: var(--gradient-primary); }
+.modal-header-stat .badge-warning { background: var(--gradient-warning); }
+
+.modal-header-info {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.modal-title-stat {
+  margin: 0 0 0.2rem 0;
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--color-text);
+  line-height: 1.2;
+}
+
+.stat-count-badge {
+  font-size: 0.78rem;
+  color: var(--color-text-muted);
+  font-weight: 500;
+  background: var(--color-border);
+  padding: 0.15rem 0.5rem;
+  border-radius: var(--radius-full);
+}
+
+.btn-close-modal {
+  position: absolute;
+  top: 1.25rem;
+  right: 1.25rem;
+  background: transparent;
+  border: none;
+  font-size: 1.1rem;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  transition: all 0.2s;
+  padding: 0.4rem;
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-close-modal:hover {
+  color: var(--color-text);
+  background: var(--color-border);
+}
+
+.modal-stat-content {
+  max-height: 55vh;
+  overflow-y: auto;
+  padding: 1rem;
+  background: var(--card-bg);
+}
+
+.stat-empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem 1rem;
+  color: var(--color-text-muted);
+  gap: 0.75rem;
+}
+
+.stat-empty-state i {
+  font-size: 2.5rem;
+  opacity: 0.5;
+}
+
+.stat-empty-state p {
+  margin: 0;
+  font-weight: 500;
+}
+
+.stat-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.stat-list-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.875rem 1rem;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  transition: background 0.2s;
+}
+
+.stat-list-item:hover {
+  background: var(--tab-hover-bg);
+}
+
+.stat-item-avatar {
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 50%;
+  background: var(--gradient-primary);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 1rem;
+  flex-shrink: 0;
+}
+
+.stat-item-info {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+}
+
+.stat-item-name {
+  font-weight: 600;
+  color: var(--color-text);
+  font-size: 0.95rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.stat-item-detail {
+  font-size: 0.8rem;
+  color: var(--color-text-secondary);
+  font-weight: 500;
+}
+
+.stat-item-badge {
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.25rem 0.6rem;
+  border-radius: var(--radius-full);
+  white-space: nowrap;
+  background: var(--color-border);
+  color: var(--color-text-secondary);
+}
+
+.stat-item-badge.badge-success {
+  background: var(--color-success-dim);
+  color: var(--color-success);
+  border: 1px solid rgba(16, 185, 129, 0.2);
+}
+
+.stat-item-badge.badge-primary {
+  background: rgba(99, 102, 241, 0.15);
+  color: var(--color-primary-light);
+  border: 1px solid rgba(99, 102, 241, 0.25);
+}
+
+.stat-item-badge.badge-warning {
+  background: var(--color-warning-dim);
+  color: var(--color-warning);
+  border: 1px solid rgba(245, 158, 11, 0.2);
 }

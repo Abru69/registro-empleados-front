@@ -83,6 +83,13 @@ export class DashboardComponent implements OnInit, OnDestroy {
   deleteTargetName = '';
   isDeletingEmpleado = false;
 
+  // Stat detail modal
+  showStatModal = false;
+  statModalTitle = '';
+  statModalIcon = '';
+  statModalBadgeClass = '';
+  statModalItems: { nombre: string; detalle: string; badge?: string }[] = [];
+
   private cdr = inject(ChangeDetectorRef);
   private themeService = inject(ThemeService);
   private themeSub!: Subscription;
@@ -192,6 +199,69 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
     const uniqueNames = new Set(rows.map(r => r.nombre));
     this.totalEmpleados = uniqueNames.size;
+  }
+
+  // ---- Stat Card Modal ---- //
+
+  openStatModal(type: 'total' | 'today' | 'active' | 'pending'): void {
+    const today = this.localToday();
+    const todayRows = this.attendanceRows.filter(r => r.fecha === today);
+
+    switch (type) {
+      case 'total':
+        this.statModalTitle = 'Empleados Registrados';
+        this.statModalIcon = 'bi-people-fill';
+        this.statModalBadgeClass = 'badge-accent';
+        this.statModalItems = this.empleados.map(e => ({
+          nombre: e.nombre,
+          detalle: `ID #${e.id}`
+        }));
+        break;
+
+      case 'today':
+        this.statModalTitle = 'Registros de Hoy';
+        this.statModalIcon = 'bi-calendar-check-fill';
+        this.statModalBadgeClass = 'badge-success';
+        this.statModalItems = todayRows.map(r => ({
+          nombre: r.nombre,
+          detalle: `Entrada: ${r.hora}`,
+          badge: r.hora_salida ? `Salida: ${r.hora_salida}` : 'Sin salida'
+        }));
+        break;
+
+      case 'active':
+        this.statModalTitle = 'Empleados Presentes Hoy';
+        this.statModalIcon = 'bi-person-check-fill';
+        this.statModalBadgeClass = 'badge-primary';
+        const uniqueToday = new Map<string, AttendanceRecord>();
+        todayRows.forEach(r => {
+          if (!uniqueToday.has(r.nombre)) uniqueToday.set(r.nombre, r);
+        });
+        this.statModalItems = Array.from(uniqueToday.values()).map(r => ({
+          nombre: r.nombre,
+          detalle: `Entrada: ${r.hora}`,
+          badge: r.hora_salida ? `Salida: ${r.hora_salida}` : 'Activo'
+        }));
+        break;
+
+      case 'pending':
+        this.statModalTitle = 'Sin Registrar Salida';
+        this.statModalIcon = 'bi-clock-history';
+        this.statModalBadgeClass = 'badge-warning';
+        this.statModalItems = todayRows.filter(r => !r.hora_salida).map(r => ({
+          nombre: r.nombre,
+          detalle: `Entrada: ${r.hora}`,
+          badge: 'Pendiente'
+        }));
+        break;
+    }
+
+    this.showStatModal = true;
+    this.cdr.detectChanges();
+  }
+
+  closeStatModal(): void {
+    this.showStatModal = false;
   }
 
   // ---- Filters ---- //

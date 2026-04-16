@@ -22,7 +22,7 @@
 
   <!-- ===== Stats Cards ===== -->
   <div class="stats-grid">
-    <div class="stat-card stat-employees">
+    <div class="stat-card stat-employees" (click)="openStatModal('total')" style="cursor: pointer" title="Ver detalle">
       <div class="stat-top">
         <div class="stat-icon-wrapper">
           <i class="bi bi-people-fill"></i>
@@ -32,7 +32,7 @@
       <div class="stat-value">{{ totalEmpleadosActivos }}</div>
       <div class="stat-label">Empleados registrados</div>
     </div>
-    <div class="stat-card stat-today">
+    <div class="stat-card stat-today" (click)="openStatModal('today')" style="cursor: pointer" title="Ver detalle">
       <div class="stat-top">
         <div class="stat-icon-wrapper">
           <i class="bi bi-calendar-check-fill"></i>
@@ -42,7 +42,7 @@
       <div class="stat-value">{{ registrosHoy }}</div>
       <div class="stat-label">Registros de hoy</div>
     </div>
-    <div class="stat-card stat-active">
+    <div class="stat-card stat-active" (click)="openStatModal('active')" style="cursor: pointer" title="Ver detalle">
       <div class="stat-top">
         <div class="stat-icon-wrapper">
           <i class="bi bi-person-check-fill"></i>
@@ -52,7 +52,7 @@
       <div class="stat-value">{{ empleadosHoy }}</div>
       <div class="stat-label">Empleados presentes hoy</div>
     </div>
-    <div class="stat-card stat-pending">
+    <div class="stat-card stat-pending" (click)="openStatModal('pending')" style="cursor: pointer" title="Ver detalle">
       <div class="stat-top">
         <div class="stat-icon-wrapper">
           <i class="bi bi-clock-history"></i>
@@ -265,6 +265,53 @@
   </div>
 
 </div>
+
+<!-- ===== STAT DETAILS MODAL ===== -->
+@if (showStatModal) {
+  <div class="modal-backdrop" (click)="closeStatModal()">
+    <div class="modal-box modal-stat-box" (click)="$event.stopPropagation()">
+      <div class="modal-header-stat">
+        <div class="modal-icon-wrap" [ngClass]="statModalBadgeClass"><i class="bi" [ngClass]="statModalIcon"></i></div>
+        <div class="modal-header-info">
+          <h3 class="modal-title-stat">{{ statModalTitle }}</h3>
+          <span class="stat-count-badge">{{ statModalItems.length }} {{ statModalItems.length === 1 ? 'registro' : 'registros' }}</span>
+        </div>
+        <button class="btn-close-modal" (click)="closeStatModal()"><i class="bi bi-x-lg"></i></button>
+      </div>
+      
+      <div class="modal-stat-content">
+        @if (statModalItems.length === 0) {
+          <div class="stat-empty-state">
+            <i class="bi bi-inboxes text-muted"></i>
+            <p>No hay datos disponibles</p>
+          </div>
+        } @else {
+          <div class="stat-list">
+            @for (item of statModalItems; track item.nombre) {
+              <div class="stat-list-item">
+                <div class="stat-item-avatar">
+                  {{ item.nombre.charAt(0).toUpperCase() }}
+                </div>
+                <div class="stat-item-info">
+                  <span class="stat-item-name">{{ item.nombre }}</span>
+                  <span class="stat-item-detail">{{ item.detalle }}</span>
+                </div>
+                @if (item.badge) {
+                  <span class="stat-item-badge" 
+                    [class.badge-warning]="item.badge === 'Sin salida' || item.badge === 'Pendiente'" 
+                    [class.badge-primary]="item.badge === 'Activo'"
+                    [class.badge-success]="item.badge.includes('Salida')">
+                    {{ item.badge }}
+                  </span>
+                }
+              </div>
+            }
+          </div>
+        }
+      </div>
+    </div>
+  </div>
+}
 
 <!-- ===== DELETE CONFIRMATION MODAL ===== -->
 @if (showDeleteModal) {
