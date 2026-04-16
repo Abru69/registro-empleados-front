@@ -810,45 +810,98 @@
   background: var(--color-surface);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-lg);
-  overflow: hidden;
+  overflow-x: auto;
   box-shadow: var(--shadow-sm);
 }
 
-.styled-table {
+/* Force Bootstrap .table to use our theme colors */
+.styled-table.table {
+  --bs-table-bg: transparent;
+  --bs-table-color: var(--color-text);
+  --bs-table-border-color: var(--color-border);
+  --bs-table-hover-bg: var(--tab-hover-bg);
+  --bs-table-hover-color: var(--color-text);
+  --bs-table-striped-bg: transparent;
   width: 100%;
   border-collapse: collapse;
   color: var(--color-text);
   font-size: 0.875rem;
+  margin-bottom: 0;
 }
 
 .styled-table thead {
-  background: var(--filter-secondary-bg);
+  background: var(--filter-secondary-bg) !important;
   border-bottom: 2px solid var(--color-border);
 }
 
-.styled-table th {
+.styled-table thead th {
   padding: 1rem 1.25rem;
   font-weight: 600;
-  color: var(--color-text-secondary);
+  font-size: 0.8rem;
+  color: var(--color-text-secondary) !important;
   white-space: nowrap;
+  border-bottom: none;
+  background: transparent;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
 }
 
 .styled-table td {
   padding: 0.875rem 1.25rem;
-  border-bottom: 1px solid var(--color-border);
+  border-bottom: 1px solid var(--color-border) !important;
+  border-top: none;
   vertical-align: middle;
+  color: var(--color-text);
 }
 
 .styled-table tbody tr {
-  transition: all 0.2s ease;
+  transition: background 0.2s ease;
 }
 
 .styled-table tbody tr:hover {
-  background: var(--tab-hover-bg);
+  background: var(--tab-hover-bg) !important;
 }
 
-.text-main { color: var(--color-text); }
-.text-secondary-color { color: var(--color-text-secondary); }
+.styled-table tbody tr:last-child td {
+  border-bottom: none !important;
+}
+
+/* Utility overrides for inside tables */
+.styled-table .text-main,
+.styled-table .fw-medium {
+  color: var(--color-text) !important;
+}
+
+.styled-table .text-secondary-color {
+  color: var(--color-text-secondary) !important;
+}
+
+.styled-table .text-success,
+.styled-table .total-horas-cell {
+  color: var(--color-success) !important;
+}
+
+.styled-table .text-muted {
+  color: var(--color-text-muted) !important;
+}
+
+/* Badge for "Sin salida" */
+.badge-warning-subtle {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.2rem 0.6rem;
+  border-radius: var(--radius-full);
+  font-size: 0.75rem;
+  font-weight: 600;
+  font-style: italic;
+  background: var(--color-warning-dim);
+  color: var(--color-warning) !important;
+  border: 1px solid rgba(245, 158, 11, 0.2);
+}
+
+/* Generic text utilities - force theme */
+.text-main { color: var(--color-text) !important; }
+.text-secondary-color { color: var(--color-text-secondary) !important; }
 
 .overlay-loading {
   position: absolute;
@@ -857,7 +910,9 @@
   align-items: center;
   justify-content: center;
   background: var(--overlay-bg);
+  backdrop-filter: blur(4px);
   z-index: 10;
+  border-radius: var(--radius-lg);
 }
 
 .pagination-container {
@@ -896,4 +951,13 @@
   font-size: 0.85rem;
   font-weight: 500;
   color: var(--color-text-secondary);
+}
+
+/* Responsive table on mobile */
+@media (max-width: 768px) {
+  .styled-table thead th,
+  .styled-table td {
+    padding: 0.7rem 0.75rem;
+    font-size: 0.8rem;
+  }
 }

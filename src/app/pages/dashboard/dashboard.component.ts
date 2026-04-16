@@ -87,6 +87,12 @@ export class DashboardComponent implements OnInit, OnDestroy {
   private themeService = inject(ThemeService);
   private themeSub!: Subscription;
 
+  /** Returns YYYY-MM-DD in LOCAL timezone (not UTC) */
+  private localToday(): string {
+    const d = new Date();
+    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+  }
+
   constructor(
     private attendanceService: AttendanceService,
     private empleadoService: EmpleadoService,
@@ -138,6 +144,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
            if (!silent) this.currentPageRegistros = 1;
         }
         this.isLoadingAttendance = false;
+        this.cdr.detectChanges();
       },
       error: (_err: unknown) => {
         this.isLoadingAttendance = false;
@@ -168,6 +175,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
            if (!silent) this.currentPageWeekly = 1;
         }
         this.isLoadingWeekly = false;
+        this.cdr.detectChanges();
       },
       error: (_err: unknown) => {
         this.isLoadingWeekly = false;
@@ -177,7 +185,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
   private updateStats(rows: AttendanceRecord[]): void {
-    const today = new Date().toISOString().split('T')[0];
+    const today = this.localToday();
     const todayRows = rows.filter(r => r.fecha === today);
     this.registrosHoy = todayRows.length;
     this.sinSalida = todayRows.filter(r => !r.hora_salida).length;
@@ -304,7 +312,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   };
 
   get todayMax(): string {
-    return new Date().toISOString().split('T')[0];
+    return this.localToday();
   }
 
   get todayLabel(): string {
@@ -314,7 +322,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
   get empleadosHoy(): number {
-    const today = new Date().toISOString().split('T')[0];
+    const today = this.localToday();
     const uniqueNames = new Set(
       this.attendanceRows.filter(r => r.fecha === today).map(r => r.nombre)
     );
