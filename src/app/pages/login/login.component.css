@@ -89,14 +89,16 @@
   width: 5rem;
   height: 5rem;
   border-radius: 1.5rem;
-  background: var(--gradient-brand);
+  overflow: hidden;
   box-shadow: 0 12px 40px rgba(99, 102, 241, 0.35);
   animation: pulseGlow 4s ease-in-out infinite;
 }
 
-.brand-icon-ring i {
-  font-size: 2.2rem;
-  color: #fff;
+.brand-logo-img-login {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 1.5rem;
 }
 
 /* Brand text */
