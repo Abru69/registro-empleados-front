@@ -22,7 +22,6 @@
 
   <!-- ===== Stats Cards ===== -->
   <div class="stats-grid">
-    <!-- Empleados totales -->
     <div class="stat-card stat-employees">
       <div class="stat-top">
         <div class="stat-icon-wrapper">
@@ -33,8 +32,6 @@
       <div class="stat-value">{{ totalEmpleadosActivos }}</div>
       <div class="stat-label">Empleados registrados</div>
     </div>
-
-    <!-- Registros hoy -->
     <div class="stat-card stat-today">
       <div class="stat-top">
         <div class="stat-icon-wrapper">
@@ -45,8 +42,6 @@
       <div class="stat-value">{{ registrosHoy }}</div>
       <div class="stat-label">Registros de hoy</div>
     </div>
-
-    <!-- Empleados activos hoy -->
     <div class="stat-card stat-active">
       <div class="stat-top">
         <div class="stat-icon-wrapper">
@@ -57,8 +52,6 @@
       <div class="stat-value">{{ empleadosHoy }}</div>
       <div class="stat-label">Empleados presentes hoy</div>
     </div>
-
-    <!-- Sin salida -->
     <div class="stat-card stat-pending">
       <div class="stat-top">
         <div class="stat-icon-wrapper">
@@ -73,35 +66,17 @@
 
   <!-- ===== Tabs ===== -->
   <div class="dashboard-tabs" role="tablist">
-    <button
-      class="tab-btn"
-      [class.active]="activeTab === 'empleados'"
-      (click)="setTab('empleados')"
-      role="tab"
-      id="tab-empleados"
-    >
+    <button class="tab-btn" [class.active]="activeTab === 'empleados'" (click)="setTab('empleados')">
       <i class="bi bi-people-fill"></i>
       <span>Empleados</span>
       <span class="tab-count">{{ totalEmpleadosActivos }}</span>
     </button>
-    <button
-      class="tab-btn"
-      [class.active]="activeTab === 'registros'"
-      (click)="setTab('registros')"
-      role="tab"
-      id="tab-registros"
-    >
+    <button class="tab-btn" [class.active]="activeTab === 'registros'" (click)="setTab('registros')">
       <i class="bi bi-card-checklist"></i>
       <span>Registros</span>
       <span class="tab-count">{{ attendanceRows.length }}</span>
     </button>
-    <button
-      class="tab-btn"
-      [class.active]="activeTab === 'semanales'"
-      (click)="setTab('semanales')"
-      role="tab"
-      id="tab-semanales"
-    >
+    <button class="tab-btn" [class.active]="activeTab === 'semanales'" (click)="setTab('semanales')">
       <i class="bi bi-calendar-range"></i>
       <span>Horas Semanales</span>
       <span class="tab-count">{{ weeklyRows.length }}</span>
@@ -116,8 +91,6 @@
         <h2>Gestión de Empleados</h2>
       </div>
     </div>
-
-    <!-- Add Employee Form -->
     <div class="add-employee-panel">
       <div class="add-employee-form">
         <label for="nuevoEmpleado" class="form-label">
@@ -125,32 +98,17 @@
           Nombre completo
         </label>
         <div class="add-employee-row">
-          <input
-            type="text"
-            id="nuevoEmpleado"
-            [(ngModel)]="nuevoEmpleadoNombre"
-            placeholder="Ej. Juan García López"
-            (keypress)="$event.key === 'Enter' ? addEmpleado() : null"
-          />
-          <button class="btn-add-employee" (click)="addEmpleado()" [disabled]="isAddingEmpleado" id="btn-add-empleado">
-            @if (isAddingEmpleado) {
-              <span class="spinner-border spinner-border-sm"></span>
-            } @else {
-              <i class="bi bi-plus-lg"></i>
-            }
+          <input type="text" id="nuevoEmpleado" [(ngModel)]="nuevoEmpleadoNombre" placeholder="Ej. Juan García López" (keypress)="$event.key === 'Enter' ? addEmpleado() : null" />
+          <button class="btn-add-employee" (click)="addEmpleado()" [disabled]="isAddingEmpleado">
+            @if (isAddingEmpleado) { <span class="spinner-border spinner-border-sm"></span> } @else { <i class="bi bi-plus-lg"></i> }
             <span>Añadir</span>
           </button>
         </div>
       </div>
     </div>
-
-    <!-- Employee List -->
     <div class="empleados-list">
       @if (isLoadingEmpleadosList) {
-        <div class="grid-loading">
-          <div class="loading-spinner"></div>
-          <span>Cargando empleados...</span>
-        </div>
+        <div class="grid-loading"><div class="loading-spinner"></div><span>Cargando empleados...</span></div>
       } @else if (empleados.length === 0) {
         <div class="empty-state">
           <div class="empty-icon"><i class="bi bi-people"></i></div>
@@ -161,21 +119,9 @@
         <div class="empleados-grid">
           @for (emp of empleados; track emp.id) {
             <div class="employee-card">
-              <div class="employee-avatar">
-                {{ emp.nombre.charAt(0).toUpperCase() }}
-              </div>
-              <div class="employee-info">
-                <span class="employee-name">{{ emp.nombre }}</span>
-                <span class="employee-id">#{{ emp.id }}</span>
-              </div>
-              <button
-                class="btn-delete-employee"
-                (click)="deleteEmpleado(emp.id)"
-                title="Eliminar empleado"
-                [id]="'btn-delete-' + emp.id"
-              >
-                <i class="bi bi-trash-fill"></i>
-              </button>
+              <div class="employee-avatar">{{ emp.nombre.charAt(0).toUpperCase() }}</div>
+              <div class="employee-info"><span class="employee-name">{{ emp.nombre }}</span><span class="employee-id">#{{ emp.id }}</span></div>
+              <button class="btn-delete-employee" (click)="deleteEmpleado(emp.id)" title="Eliminar"><i class="bi bi-trash-fill"></i></button>
             </div>
           }
         </div>
@@ -186,127 +132,136 @@
   <!-- ===== ATTENDANCE RECORDS SECTION ===== -->
   <div class="section-card" [class.d-none]="activeTab !== 'registros'">
     <div class="section-header">
-      <div class="section-title">
-        <i class="bi bi-table"></i>
-        <h2>Registros de Asistencia</h2>
-      </div>
-      <button class="btn-export" (click)="exportAttendance()" id="btn-export-attendance">
-        <i class="bi bi-file-earmark-spreadsheet"></i>
-        Exportar CSV
-      </button>
+      <div class="section-title"><i class="bi bi-table"></i><h2>Registros de Asistencia</h2></div>
+      <button class="btn-export" (click)="exportAttendance()"><i class="bi bi-file-earmark-spreadsheet"></i> Exportar CSV</button>
     </div>
-
-    <!-- Filters -->
     <div class="filter-section">
       <div class="filter-grid">
         <div class="filter-field">
-          <label for="filterNombre"><i class="bi bi-search"></i> Empleado</label>
-          <input type="text" id="filterNombre" [(ngModel)]="filterNombre" placeholder="Buscar por nombre..." (keypress)="onAttendanceKeyPress($event)" />
+          <label><i class="bi bi-search"></i> Empleado</label>
+          <input type="text" [(ngModel)]="filterNombre" placeholder="Buscar por nombre..." (keypress)="onAttendanceKeyPress($event)" />
         </div>
         <div class="filter-field">
-          <label for="filterDesde"><i class="bi bi-calendar-event"></i> Desde</label>
-          <input type="date" id="filterDesde" [(ngModel)]="filterDesde" [max]="todayMax" />
+          <label><i class="bi bi-calendar-event"></i> Desde</label>
+          <input type="date" [(ngModel)]="filterDesde" [max]="todayMax" />
         </div>
         <div class="filter-field">
-          <label for="filterHasta"><i class="bi bi-calendar-event"></i> Hasta</label>
-          <input type="date" id="filterHasta" [(ngModel)]="filterHasta" [max]="todayMax" />
+          <label><i class="bi bi-calendar-event"></i> Hasta</label>
+          <input type="date" [(ngModel)]="filterHasta" [max]="todayMax" />
         </div>
       </div>
       <div class="filter-actions">
-        <button class="btn-filter-primary" (click)="filterAttendance()">
-          <i class="bi bi-funnel-fill"></i> Buscar
-        </button>
-        <button class="btn-filter-secondary" (click)="clearAttendanceFilters()">
-          <i class="bi bi-x-circle"></i> Limpiar
-        </button>
+        <button class="btn-filter-primary" (click)="filterAttendance()"><i class="bi bi-funnel-fill"></i> Buscar</button>
+        <button class="btn-filter-secondary" (click)="clearAttendanceFilters()"><i class="bi bi-x-circle"></i> Limpiar</button>
       </div>
     </div>
-
-    <!-- AG Grid -->
-    <div class="grid-wrapper">
+    
+    <div class="table-responsive styled-table-wrapper position-relative">
       @if (isLoadingAttendance) {
-        <div class="grid-loading">
-          <div class="loading-spinner"></div>
-          <span>Cargando registros...</span>
-        </div>
+        <div class="overlay-loading"><div class="loading-spinner"></div></div>
       }
-      <ag-grid-angular
-        style="width: 100%; height: 500px;"
-        [theme]="gridTheme"
-        [rowData]="attendanceRows"
-        [columnDefs]="attendanceColDefs"
-        [defaultColDef]="defaultColDef"
-        [pagination]="true"
-        [paginationPageSize]="paginationPageSize"
-        [paginationPageSizeSelector]="paginationPageSizeSelector"
-        [localeText]="localeText"
-        [animateRows]="true"
-        [suppressColumnVirtualisation]="true"
-        (gridReady)="onAttendanceGridReady($event)"
-        (gridSizeChanged)="onGridSizeChanged($event)"
-      />
+      <table class="table styled-table table-hover align-middle mb-0">
+        <thead>
+          <tr>
+            <th>Nombre del Empleado</th>
+            <th class="text-center">Fecha</th>
+            <th class="text-center">Hora Entrada</th>
+            <th class="text-center">Hora Salida</th>
+            <th class="text-end">Total Horas</th>
+          </tr>
+        </thead>
+        <tbody>
+          @if (attendanceRows.length === 0 && !isLoadingAttendance) {
+            <tr><td colspan="5" class="text-center text-muted py-4">No hay registros para mostrar.</td></tr>
+          } @else {
+            @for (row of paginatedRegistros; track row.id) {
+              <tr>
+                <td class="fw-medium text-main">{{ row.nombre }}</td>
+                <td class="text-center text-secondary-color">{{ row.fecha }}</td>
+                <td class="text-center text-secondary-color fw-medium">{{ row.hora }}</td>
+                <td class="text-center">
+                  @if (row.hora_salida) { <span class="fw-medium text-secondary-color">{{ row.hora_salida }}</span> }
+                  @else { <span class="badge badge-warning-subtle text-warning">Sin salida</span> }
+                </td>
+                <td class="text-end total-horas-cell fw-bold text-success">{{ row.total_hhmm }}</td>
+              </tr>
+            }
+          }
+        </tbody>
+      </table>
     </div>
+    @if (totalPagesRegistros > 1) {
+      <div class="pagination-container">
+        <button class="btn-page" [disabled]="currentPageRegistros === 1" (click)="currentPageRegistros = currentPageRegistros - 1"><i class="bi bi-chevron-left"></i></button>
+        <span class="page-info">Página {{ currentPageRegistros }} de {{ totalPagesRegistros }}</span>
+        <button class="btn-page" [disabled]="currentPageRegistros === totalPagesRegistros" (click)="currentPageRegistros = currentPageRegistros + 1"><i class="bi bi-chevron-right"></i></button>
+      </div>
+    }
   </div>
 
   <!-- ===== WEEKLY HOURS SECTION ===== -->
   <div class="section-card" [class.d-none]="activeTab !== 'semanales'">
     <div class="section-header">
-      <div class="section-title">
-        <i class="bi bi-bar-chart-fill"></i>
-        <h2>Horas Semanales</h2>
-      </div>
-      <button class="btn-export" (click)="exportWeekly()" id="btn-export-weekly">
-        <i class="bi bi-file-earmark-spreadsheet"></i>
-        Exportar CSV
-      </button>
+      <div class="section-title"><i class="bi bi-bar-chart-fill"></i><h2>Horas Semanales</h2></div>
+      <button class="btn-export" (click)="exportWeekly()"><i class="bi bi-file-earmark-spreadsheet"></i> Exportar CSV</button>
     </div>
-
-    <!-- Filters -->
     <div class="filter-section">
       <div class="filter-grid">
         <div class="filter-field">
-          <label for="filterNombreSemanal"><i class="bi bi-search"></i> Empleado</label>
-          <input type="text" id="filterNombreSemanal" [(ngModel)]="filterNombreSemanal" placeholder="Buscar..." (keypress)="onWeeklyKeyPress($event)" />
+          <label><i class="bi bi-search"></i> Empleado</label>
+          <input type="text" [(ngModel)]="filterNombreSemanal" placeholder="Buscar..." (keypress)="onWeeklyKeyPress($event)" />
         </div>
         <div class="filter-field">
-          <label for="filterSemana"><i class="bi bi-calendar-week"></i> Semana</label>
-          <input type="week" id="filterSemana" [(ngModel)]="filterSemana" />
+          <label><i class="bi bi-calendar-week"></i> Semana</label>
+          <input type="week" [(ngModel)]="filterSemana" />
         </div>
       </div>
       <div class="filter-actions">
-        <button class="btn-filter-primary" (click)="filterWeekly()">
-          <i class="bi bi-funnel-fill"></i> Filtrar
-        </button>
-        <button class="btn-filter-secondary" (click)="clearWeeklyFilters()">
-          <i class="bi bi-x-circle"></i> Limpiar
-        </button>
+        <button class="btn-filter-primary" (click)="filterWeekly()"><i class="bi bi-funnel-fill"></i> Filtrar</button>
+        <button class="btn-filter-secondary" (click)="clearWeeklyFilters()"><i class="bi bi-x-circle"></i> Limpiar</button>
       </div>
     </div>
-
-    <!-- AG Grid -->
-    <div class="grid-wrapper">
+    
+    <div class="table-responsive styled-table-wrapper position-relative">
       @if (isLoadingWeekly) {
-        <div class="grid-loading">
-          <div class="loading-spinner"></div>
-          <span>Cargando datos semanales...</span>
-        </div>
+        <div class="overlay-loading"><div class="loading-spinner"></div></div>
       }
-      <ag-grid-angular
-        style="width: 100%; height: 500px;"
-        [theme]="gridTheme"
-        [rowData]="weeklyRows"
-        [columnDefs]="weeklyColDefs"
-        [defaultColDef]="defaultColDef"
-        [pagination]="true"
-        [paginationPageSize]="paginationPageSize"
-        [paginationPageSizeSelector]="paginationPageSizeSelector"
-        [localeText]="localeText"
-        [animateRows]="true"
-        [suppressColumnVirtualisation]="true"
-        (gridReady)="onWeeklyGridReady($event)"
-        (gridSizeChanged)="onGridSizeChanged($event)"
-      />
+      <table class="table styled-table table-hover align-middle mb-0">
+        <thead>
+          <tr>
+            <th>Empleado</th>
+            <th class="text-center">Semana</th>
+            <th class="text-center">Inicio <small>(Lunes)</small></th>
+            <th class="text-center">Fin <small>(Domingo)</small></th>
+            <th class="text-center">Días Trabajados</th>
+            <th class="text-end">Total Semana</th>
+          </tr>
+        </thead>
+        <tbody>
+          @if (weeklyRows.length === 0 && !isLoadingWeekly) {
+            <tr><td colspan="6" class="text-center text-muted py-4">No hay datos semanales.</td></tr>
+          } @else {
+            @for (row of paginatedWeekly; track row.nombre + row.semana_iso) {
+              <tr>
+                <td class="fw-medium text-main">{{ row.nombre }}</td>
+                <td class="text-center text-secondary-color">{{ row.semana_iso }}</td>
+                <td class="text-center text-secondary-color">{{ row.fecha_inicio }}</td>
+                <td class="text-center text-secondary-color">{{ row.fecha_fin }}</td>
+                <td class="text-center fw-medium">{{ row.total_registros }}</td>
+                <td class="text-end fw-bold text-success">{{ formatWeeklyMinutes(row.total_minutos, row.total_horas_decimal) }}</td>
+              </tr>
+            }
+          }
+        </tbody>
+      </table>
     </div>
+    @if (totalPagesWeekly > 1) {
+      <div class="pagination-container">
+        <button class="btn-page" [disabled]="currentPageWeekly === 1" (click)="currentPageWeekly = currentPageWeekly - 1"><i class="bi bi-chevron-left"></i></button>
+        <span class="page-info">Página {{ currentPageWeekly }} de {{ totalPagesWeekly }}</span>
+        <button class="btn-page" [disabled]="currentPageWeekly === totalPagesWeekly" (click)="currentPageWeekly = currentPageWeekly + 1"><i class="bi bi-chevron-right"></i></button>
+      </div>
+    }
   </div>
 
 </div>
@@ -314,27 +269,14 @@
 <!-- ===== DELETE CONFIRMATION MODAL ===== -->
 @if (showDeleteModal) {
   <div class="modal-backdrop" (click)="cancelDelete()">
-    <div class="modal-box" (click)="$event.stopPropagation()" role="dialog" aria-modal="true" aria-labelledby="modal-title">
-      <div class="modal-icon-wrap">
-        <i class="bi bi-trash3-fill"></i>
-      </div>
-      <h3 id="modal-title" class="modal-title">¿Eliminar empleado?</h3>
-      <p class="modal-desc">
-        Estás a punto de eliminar a <strong>{{ deleteTargetName }}</strong>.
-        Esta acción eliminará todos sus registros y no se puede deshacer.
-      </p>
+    <div class="modal-box" (click)="$event.stopPropagation()">
+      <div class="modal-icon-wrap"><i class="bi bi-trash3-fill"></i></div>
+      <h3 class="modal-title">¿Eliminar empleado?</h3>
+      <p class="modal-desc">Estás a punto de eliminar a <strong>{{ deleteTargetName }}</strong>. Esta acción eliminará todos sus registros y no se puede deshacer.</p>
       <div class="modal-actions">
-        <button class="modal-btn modal-btn-cancel" (click)="cancelDelete()" id="btn-cancel-delete">
-          <i class="bi bi-x-lg"></i>
-          Cancelar
-        </button>
-        <button class="modal-btn modal-btn-confirm" (click)="confirmDelete()" [disabled]="isDeletingEmpleado" id="btn-confirm-delete">
-          @if (isDeletingEmpleado) {
-            <span class="spinner-border spinner-border-sm"></span>
-          } @else {
-            <i class="bi bi-trash3-fill"></i>
-          }
-          Eliminar
+        <button class="modal-btn modal-btn-cancel" (click)="cancelDelete()"><i class="bi bi-x-lg"></i> Cancelar</button>
+        <button class="modal-btn modal-btn-confirm" (click)="confirmDelete()" [disabled]="isDeletingEmpleado">
+          @if (isDeletingEmpleado) { <span class="spinner-border spinner-border-sm"></span> } @else { <i class="bi bi-trash3-fill"></i> } Eliminar
         </button>
       </div>
     </div>

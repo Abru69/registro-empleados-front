@@ -804,3 +804,96 @@
   .modal-box { padding: 1.75rem 1.25rem 1.5rem; }
   .modal-actions { flex-direction: column-reverse; }
 }
+
+/* ===== MANUAL NATIVE TABLES ===== */
+.styled-table-wrapper {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+}
+
+.styled-table {
+  width: 100%;
+  border-collapse: collapse;
+  color: var(--color-text);
+  font-size: 0.875rem;
+}
+
+.styled-table thead {
+  background: var(--filter-secondary-bg);
+  border-bottom: 2px solid var(--color-border);
+}
+
+.styled-table th {
+  padding: 1rem 1.25rem;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  white-space: nowrap;
+}
+
+.styled-table td {
+  padding: 0.875rem 1.25rem;
+  border-bottom: 1px solid var(--color-border);
+  vertical-align: middle;
+}
+
+.styled-table tbody tr {
+  transition: all 0.2s ease;
+}
+
+.styled-table tbody tr:hover {
+  background: var(--tab-hover-bg);
+}
+
+.text-main { color: var(--color-text); }
+.text-secondary-color { color: var(--color-text-secondary); }
+
+.overlay-loading {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--overlay-bg);
+  z-index: 10;
+}
+
+.pagination-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  padding: 1rem;
+  background: transparent;
+}
+
+.btn-page {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  background: var(--card-bg);
+  color: var(--color-text);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-page:hover:not(:disabled) {
+  background: var(--color-border-hover);
+}
+
+.btn-page:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.page-info {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--color-text-secondary);
+}

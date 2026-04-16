@@ -1,16 +1,6 @@
 import { Component, OnInit, OnDestroy, ChangeDetectorRef, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { AgGridAngular } from 'ag-grid-angular';
-import {
-  AllCommunityModule,
-  ModuleRegistry,
-  ColDef,
-  GridApi,
-  GridReadyEvent,
-  GridSizeChangedEvent,
-  themeQuartz
-} from 'ag-grid-community';
 import {
   AttendanceService,
   AttendanceRecord,
@@ -23,12 +13,10 @@ import { ToastService } from '@shared/components/toast/toast.service';
 import { ThemeService } from '@core/services/theme.service';
 import { Subscription } from 'rxjs';
 
-ModuleRegistry.registerModules([AllCommunityModule]);
-
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule, FormsModule, AgGridAngular],
+  imports: [CommonModule, FormsModule],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.css'
 })
@@ -42,13 +30,30 @@ export class DashboardComponent implements OnInit, OnDestroy {
   filterNombreSemanal = '';
   filterSemana = '';
 
-  // Grid data
+  // Data
   attendanceRows: AttendanceRecord[] = [];
   weeklyRows: WeeklyRecord[] = [];
 
-  // AG-Grid APIs
-  private attendanceGridApi!: GridApi;
-  private weeklyGridApi!: GridApi;
+  // Pagination - Registros
+  currentPageRegistros = 1;
+  itemsPerPage = 15;
+  get paginatedRegistros(): AttendanceRecord[] {
+    const start = (this.currentPageRegistros - 1) * this.itemsPerPage;
+    return this.attendanceRows.slice(start, start + this.itemsPerPage);
+  }
+  get totalPagesRegistros(): number {
+    return Math.ceil(this.attendanceRows.length / this.itemsPerPage) || 1;
+  }
+
+  // Pagination - Semanales
+  currentPageWeekly = 1;
+  get paginatedWeekly(): WeeklyRecord[] {
+    const start = (this.currentPageWeekly - 1) * this.itemsPerPage;
+    return this.weeklyRows.slice(start, start + this.itemsPerPage);
+  }
+  get totalPagesWeekly(): number {
+    return Math.ceil(this.weeklyRows.length / this.itemsPerPage) || 1;
+  }
 
   // Auto-refresh
   private refreshInterval: ReturnType<typeof setInterval> | null = null;
@@ -82,191 +87,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
   private themeService = inject(ThemeService);
   private themeSub!: Subscription;
 
-  // AG-Grid themes
-  private darkGridTheme = themeQuartz.withParams({
-    backgroundColor: 'rgba(15, 23, 42, 0.6)',
-    foregroundColor: '#e2e8f0',
-    headerBackgroundColor: 'rgba(30, 41, 59, 0.8)',
-    headerFontWeight: 600,
-    rowHoverColor: 'rgba(99, 102, 241, 0.08)',
-    borderColor: 'rgba(255, 255, 255, 0.06)',
-    cellHorizontalPaddingScale: 1.2,
-    headerFontSize: 13,
-    fontSize: 14,
-    rowBorder: true,
-    wrapperBorderRadius: 12,
-    headerColumnResizeHandleColor: 'rgba(99, 102, 241, 0.4)',
-    selectedRowBackgroundColor: 'rgba(99, 102, 241, 0.12)',
-    rangeSelectionBorderColor: '#6366f1'
-  });
-
-  private lightGridTheme = themeQuartz.withParams({
-    backgroundColor: '#ffffff',
-    foregroundColor: '#1e293b',
-    headerBackgroundColor: '#f1f5f9',
-    headerFontWeight: 600,
-    rowHoverColor: 'rgba(79, 70, 229, 0.06)',
-    borderColor: 'rgba(0, 0, 0, 0.08)',
-    cellHorizontalPaddingScale: 1.2,
-    headerFontSize: 13,
-    fontSize: 14,
-    rowBorder: true,
-    wrapperBorderRadius: 12,
-    headerColumnResizeHandleColor: 'rgba(79, 70, 229, 0.3)',
-    selectedRowBackgroundColor: 'rgba(79, 70, 229, 0.08)',
-    rangeSelectionBorderColor: '#4f46e5'
-  });
-
-  gridTheme = this.themeService.isDark ? this.darkGridTheme : this.lightGridTheme;
-
-  // Attendance columns
-  attendanceColDefs: ColDef<AttendanceRecord>[] = [
-    {
-      field: 'nombre',
-      headerName: 'Nombre del Empleado',
-      filter: 'agTextColumnFilter',
-      flex: 2,
-      minWidth: 180
-    },
-    {
-      field: 'fecha',
-      headerName: 'Fecha',
-      filter: 'agDateColumnFilter',
-      flex: 1,
-      minWidth: 130
-    },
-    {
-      field: 'hora',
-      headerName: 'Hora Entrada',
-      flex: 1,
-      minWidth: 120
-    },
-    {
-      field: 'hora_salida',
-      headerName: 'Hora Salida',
-      flex: 1,
-      minWidth: 120,
-      valueFormatter: (params) => params.value || 'Sin salida',
-      cellStyle: (params) => {
-        if (!params.value) {
-          return { color: '#f59e0b', fontStyle: 'italic' } as Record<string, string>;
-        }
-        return null;
-      }
-    },
-    {
-      field: 'total_hhmm',
-      headerName: 'Total Horas',
-      flex: 1,
-      minWidth: 130,
-      cellStyle: { fontWeight: '600', color: '#34d399' }
-    }
-  ];
-
-  // Weekly columns
-  weeklyColDefs: ColDef<WeeklyRecord>[] = [
-    {
-      field: 'nombre',
-      headerName: 'Empleado',
-      flex: 2,
-      minWidth: 180,
-      pinned: 'left' as const
-    },
-    {
-      field: 'semana_iso',
-      headerName: 'Semana',
-      flex: 1,
-      minWidth: 120
-    },
-    {
-      field: 'fecha_inicio',
-      headerName: 'Inicio (Lunes)',
-      flex: 1.2,
-      minWidth: 130
-    },
-    {
-      field: 'fecha_fin',
-      headerName: 'Fin (Domingo)',
-      flex: 1.2,
-      minWidth: 130
-    },
-    {
-      field: 'total_registros',
-      headerName: 'Días Trabajados',
-      flex: 1,
-      minWidth: 140,
-      cellStyle: { textAlign: 'center' }
-    },
-    {
-      field: 'total_horas_decimal',
-      headerName: 'Total por Semana',
-      flex: 1.5,
-      minWidth: 200,
-      valueFormatter: (params) => {
-        const data = params.data;
-        if (!data) return '0:00';
-        const minutos = data.total_minutos;
-
-        const formatMin = (totalMin: number): string => {
-          if (!totalMin || totalMin <= 0) return '0:00 (0 horas con 0 minutos)';
-          const h = Math.floor(totalMin / 60);
-          const mm = totalMin % 60;
-          const minutosStr = mm.toString().padStart(2, '0');
-          const horasTexto = h === 1 ? '1 hora' : `${h} horas`;
-          const minutosTexto = mm === 1 ? '1 minuto' : `${mm} minutos`;
-          return `${h}:${minutosStr} (${horasTexto} con ${minutosTexto})`;
-        };
-
-        if (minutos !== null && minutos !== undefined) {
-          return formatMin(minutos);
-        }
-
-        const decimalVal = params.value;
-        if (decimalVal || decimalVal === 0) {
-          return formatMin(Math.round(Number(decimalVal) * 60));
-        }
-
-        return '0:00 (0 horas con 0 minutos)';
-      },
-      cellStyle: { fontWeight: '700', color: '#34d399', fontSize: '14px' }
-    }
-  ];
-
-  // Default column definition
-  defaultColDef: ColDef = {
-    sortable: true,
-    resizable: true
-  };
-
-  // Pagination
-  paginationPageSize = 15;
-  paginationPageSizeSelector = [15, 25, 50, 100];
-
-  // AG-Grid locale
-  localeText: Record<string, string> = {
-    page: 'Página',
-    more: 'Más',
-    to: 'a',
-    of: 'de',
-    next: 'Siguiente',
-    last: 'Último',
-    first: 'Primero',
-    previous: 'Anterior',
-    loadingOoo: 'Cargando...',
-    noRowsToShow: 'No hay registros para mostrar',
-    filterOoo: 'Filtrar...',
-    searchOoo: 'Buscar...',
-    selectAll: 'Seleccionar todo',
-    equals: 'Igual',
-    notEqual: 'Diferente',
-    lessThan: 'Menor que',
-    greaterThan: 'Mayor que',
-    contains: 'Contiene',
-    notContains: 'No contiene',
-    startsWith: 'Comienza con',
-    endsWith: 'Termina con'
-  };
-
   constructor(
     private attendanceService: AttendanceService,
     private empleadoService: EmpleadoService,
@@ -279,8 +99,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.startAutoRefresh();
     this.loadEmpleados();
 
-    this.themeSub = this.themeService.theme$.subscribe(theme => {
-      this.gridTheme = theme === 'dark' ? this.darkGridTheme : this.lightGridTheme;
+    this.themeSub = this.themeService.theme$.subscribe(() => {
       this.cdr.detectChanges();
     });
 
@@ -293,18 +112,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
     document.removeEventListener('visibilitychange', this.handleVisibility);
   }
 
-  // Grid Ready handlers
-  onAttendanceGridReady(params: GridReadyEvent): void {
-    this.attendanceGridApi = params.api;
-    params.api.sizeColumnsToFit();
-  }
+  // ---- Load Data ---- //
 
-  onWeeklyGridReady(params: GridReadyEvent): void {
-    this.weeklyGridApi = params.api;
-    params.api.sizeColumnsToFit();
-  }
-
-  // Load Attendance Data
   loadAttendance(silent = false): void {
     if (!silent) this.isLoadingAttendance = true;
 
@@ -319,19 +128,15 @@ export class DashboardComponent implements OnInit, OnDestroy {
           if (!silent) this.toastService.error(response.message || 'Error al cargar datos');
           return;
         }
-
         const rows = response.data || [];
         const sig = JSON.stringify(rows.map((r: AttendanceRecord) => `${r.id}-${r.hora_salida}-${r.total_hhmm}`));
 
         if (!silent || sig !== this.lastAttendanceSig) {
-          this.attendanceRows = rows;
-          this.lastAttendanceSig = sig;
-          this.updateStats(rows);
-          if (this.attendanceGridApi) {
-            setTimeout(() => this.attendanceGridApi.sizeColumnsToFit(), 100);
-          }
+           this.attendanceRows = rows;
+           this.lastAttendanceSig = sig;
+           this.updateStats(rows);
+           if (!silent) this.currentPageRegistros = 1;
         }
-
         this.isLoadingAttendance = false;
       },
       error: (_err: unknown) => {
@@ -341,7 +146,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
     });
   }
 
-  // Load Weekly Data
   loadWeekly(silent = false): void {
     if (!silent) this.isLoadingWeekly = true;
 
@@ -355,18 +159,14 @@ export class DashboardComponent implements OnInit, OnDestroy {
           if (!silent) this.toastService.error(response.message || 'Error al cargar datos semanales');
           return;
         }
-
         const rows = response.data || [];
         const sig = JSON.stringify(rows.map((r: WeeklyRecord) => `${r.nombre}-${r.semana_iso}-${r.total_minutos}`));
 
         if (!silent || sig !== this.lastWeeklySig) {
           this.weeklyRows = rows;
           this.lastWeeklySig = sig;
-          if (this.weeklyGridApi) {
-            setTimeout(() => this.weeklyGridApi.sizeColumnsToFit(), 100);
-          }
+           if (!silent) this.currentPageWeekly = 1;
         }
-
         this.isLoadingWeekly = false;
       },
       error: (_err: unknown) => {
@@ -376,7 +176,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
     });
   }
 
-  // Stats
   private updateStats(rows: AttendanceRecord[]): void {
     const today = new Date().toISOString().split('T')[0];
     const todayRows = rows.filter(r => r.fecha === today);
@@ -387,7 +186,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.totalEmpleados = uniqueNames.size;
   }
 
-  // Filter actions
+  // ---- Filters ---- //
+
   filterAttendance(): void {
     this.loadAttendance(false);
   }
@@ -409,26 +209,80 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.loadWeekly(false);
   }
 
-  // Export
+  // --- Export Functions --- //
+
   exportAttendance(): void {
-    if (this.attendanceGridApi) {
-      this.attendanceGridApi.exportDataAsCsv({
-        fileName: `asistencia_${new Date().toISOString().split('T')[0]}.csv`
-      });
-      this.toastService.success('Archivo exportado correctamente');
+    if (this.attendanceRows.length === 0) {
+      this.toastService.error('No hay datos para exportar');
+      return;
     }
+    const header = ['Nombre del Empleado', 'Fecha', 'Hora Entrada', 'Hora Salida', 'Total Horas'];
+    const csvContent = [
+      header.join(','),
+      ...this.attendanceRows.map(r => [
+        `"${r.nombre}"`,
+        `"${r.fecha}"`,
+        `"${r.hora}"`,
+        `"${r.hora_salida || 'Sin salida'}"`,
+        `"${r.total_hhmm}"`
+      ].join(','))
+    ].join('\n');
+    
+    this.downloadCSV(csvContent, `asistencia_${new Date().toISOString().split('T')[0]}.csv`);
   }
 
   exportWeekly(): void {
-    if (this.weeklyGridApi) {
-      this.weeklyGridApi.exportDataAsCsv({
-        fileName: `horas_semanales_${new Date().toISOString().split('T')[0]}.csv`
-      });
-      this.toastService.success('Archivo exportado correctamente');
+    if (this.weeklyRows.length === 0) {
+      this.toastService.error('No hay datos para exportar');
+      return;
     }
+    const header = ['Empleado', 'Semana', 'Inicio (Lunes)', 'Fin (Domingo)', 'Días Trabajados', 'Total por Semana'];
+    const csvContent = [
+      header.join(','),
+      ...this.weeklyRows.map(r => [
+        `"${r.nombre}"`,
+        `"${r.semana_iso}"`,
+        `"${r.fecha_inicio}"`,
+        `"${r.fecha_fin}"`,
+        `"${r.total_registros}"`,
+        `"${this.formatWeeklyMinutes(r.total_minutos, r.total_horas_decimal)}"`
+      ].join(','))
+    ].join('\n');
+    
+    this.downloadCSV(csvContent, `horas_semanales_${new Date().toISOString().split('T')[0]}.csv`);
   }
 
-  // Auto-refresh
+  private downloadCSV(csvContent: string, fileName: string): void {
+    const blob = new Blob(['\uFEFF' + csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    const url = URL.createObjectURL(blob);
+    link.href = url;
+    link.download = fileName;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+    this.toastService.success('Archivo exportado correctamente');
+  }
+
+  formatWeeklyMinutes(minutos?: number | null, decimal?: number | null): string {
+    const formatMin = (totalMin: number): string => {
+      if (!totalMin || totalMin <= 0) return '0:00 (0 horas con 0 minutos)';
+      const h = Math.floor(totalMin / 60);
+      const mm = totalMin % 60;
+      const minutosStr = mm.toString().padStart(2, '0');
+      const horasTexto = h === 1 ? '1 hora' : `${h} horas`;
+      const minutosTexto = mm === 1 ? '1 minuto' : `${mm} minutos`;
+      return `${h}:${minutosStr} (${horasTexto} con ${minutosTexto})`;
+    };
+
+    if (minutos !== null && minutos !== undefined) return formatMin(minutos);
+    if (decimal || decimal === 0) return formatMin(Math.round(Number(decimal) * 60));
+    return '0:00 (0 horas con 0 minutos)';
+  }
+
+  // ---- Misc & View logic ---- //
+
   private startAutoRefresh(): void {
     this.refreshInterval = setInterval(() => this.loadAttendance(true), 5000);
     this.weeklyRefreshInterval = setInterval(() => this.loadWeekly(true), 10000);
@@ -449,24 +303,16 @@ export class DashboardComponent implements OnInit, OnDestroy {
     }
   };
 
-  // Handle grid resize
-  onGridSizeChanged(params: GridSizeChangedEvent): void {
-    params.api.sizeColumnsToFit();
-  }
-
-  // Today max for date inputs
   get todayMax(): string {
     return new Date().toISOString().split('T')[0];
   }
 
-  // Today label for header
   get todayLabel(): string {
     return new Date().toLocaleDateString('es-MX', {
       weekday: 'short', year: 'numeric', month: 'short', day: 'numeric'
     });
   }
 
-  // Empleados únicos con registro hoy
   get empleadosHoy(): number {
     const today = new Date().toISOString().split('T')[0];
     const uniqueNames = new Set(
@@ -475,12 +321,10 @@ export class DashboardComponent implements OnInit, OnDestroy {
     return uniqueNames.size;
   }
 
-  // Total empleados de la lista de empleados gestionados
   get totalEmpleadosActivos(): number {
     return this.empleados.length > 0 ? this.empleados.length : this.totalEmpleados;
   }
 
-  // Enter key handler
   onAttendanceKeyPress(event: KeyboardEvent): void {
     if (event.key === 'Enter') this.filterAttendance();
   }
@@ -489,26 +333,19 @@ export class DashboardComponent implements OnInit, OnDestroy {
     if (event.key === 'Enter') this.filterWeekly();
   }
 
-  // Tabs Logic
   setTab(tab: 'registros' | 'semanales' | 'empleados'): void {
     this.activeTab = tab;
     if (tab === 'empleados') {
-       // Carga instantánea usando estado en memoria si ya existen
        if (this.empleados.length > 0) {
-         this.loadEmpleados(true); // actualiza debajo del cajón (silencioso)
+         this.loadEmpleados(true);
        } else {
          this.loadEmpleados(false);
        }
-    } else {
-       // Timeout para que el DOM muestre el grid antes de redimensionar
-       setTimeout(() => {
-          if (tab === 'registros' && this.attendanceGridApi) this.attendanceGridApi.sizeColumnsToFit();
-          if (tab === 'semanales' && this.weeklyGridApi) this.weeklyGridApi.sizeColumnsToFit();
-       }, 50);
     }
   }
 
-  // Empleados Management Logic
+  // ---- Empleados Management ---- //
+
   loadEmpleados(silent = false): void {
     if (!silent) this.isLoadingEmpleadosList = true;
     this.empleadoService.getEmpleados().subscribe({
@@ -541,8 +378,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
         if (res.success) {
           this.toastService.success(res.message || 'Empleado agregado');
           this.nuevoEmpleadoNombre = '';
-          
-          // Actualización optimista de la tabla al instante:
           if (res.data) {
              this.empleados = [...this.empleados, res.data as Empleado].sort((a,b) => a.nombre.localeCompare(b.nombre));
           } else {
