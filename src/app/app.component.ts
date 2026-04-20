@@ -3,6 +3,7 @@ import { RouterOutlet } from '@angular/router';
 import { NavbarComponent } from './shared/components/navbar/navbar.component';
 import { ToastComponent } from './shared/components/toast/toast.component';
 import { InactivityService } from './core/services/inactivity.service';
+import { KeepAliveService } from './core/services/keep-alive.service';
 
 @Component({
   selector: 'app-root',
@@ -21,9 +22,14 @@ import { InactivityService } from './core/services/inactivity.service';
   `]
 })
 export class AppComponent implements OnInit {
-  constructor(private inactivityService: InactivityService) {}
+  constructor(
+    private inactivityService: InactivityService,
+    private keepAliveService: KeepAliveService
+  ) {}
 
   ngOnInit() {
     this.inactivityService.startMonitoring();
+    this.keepAliveService.start();
   }
 }
+
