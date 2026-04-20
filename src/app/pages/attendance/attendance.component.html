@@ -36,6 +36,14 @@
                 <div class="mini-spinner"></div>
                 <span>Cargando empleados...</span>
               </div>
+            } @else if (errorLoadingEmpleados) {
+              <div class="select-error">
+                <i class="bi bi-exclamation-triangle-fill"></i>
+                <span>No se pudo cargar la lista</span>
+                <button class="btn-retry" type="button" (click)="retryCargarEmpleados()">
+                  <i class="bi bi-arrow-clockwise"></i> Reintentar
+                </button>
+              </div>
             } @else {
               <select
                 id="nombre"

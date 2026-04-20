@@ -23,6 +23,7 @@ export class AttendanceComponent implements OnInit, OnDestroy {
   private clockInterval: ReturnType<typeof setInterval> | null = null;
   empleados: Empleado[] = [];
   isLoadingEmpleados = true;
+  errorLoadingEmpleados = false;
 
   constructor(
     private attendanceService: AttendanceService,
@@ -38,20 +39,33 @@ export class AttendanceComponent implements OnInit, OnDestroy {
   }
 
   private cargarEmpleados(): void {
+    this.isLoadingEmpleados = true;
+    this.errorLoadingEmpleados = false;
     this.empleadoService.getEmpleados().subscribe({
       next: (res) => {
         if (res.success && res.data) {
           this.empleados = res.data as Empleado[];
+          this.errorLoadingEmpleados = false;
+        } else {
+          // El backend devolvio success:false (p.ej. token expirado).
+          // El interceptor ya habrá disparado forceLogout() si era un error de token,
+          // pero si no, mostramos el estado de error con opción de reintentar.
+          this.errorLoadingEmpleados = true;
         }
         this.isLoadingEmpleados = false;
         this.cdr.detectChanges();
       },
       error: () => {
         this.isLoadingEmpleados = false;
+        this.errorLoadingEmpleados = true;
         this.toastService.error('Hubo un error cargando la lista de empleados.');
         this.cdr.detectChanges();
       }
     });
+  }
+
+  retryCargarEmpleados(): void {
+    this.cargarEmpleados();
   }
 
   ngOnDestroy(): void {

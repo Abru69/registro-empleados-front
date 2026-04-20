@@ -205,6 +205,58 @@
   flex-shrink: 0;
 }
 
+/* Select error state */
+.select-error {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.85rem 1rem;
+  background: rgba(239, 68, 68, 0.08);
+  border: 1.5px solid rgba(239, 68, 68, 0.3);
+  border-radius: var(--radius-lg);
+  font-size: 0.875rem;
+  color: #f87171;
+  animation: fadeInUp 0.3s var(--ease-out);
+}
+
+.select-error i {
+  font-size: 1rem;
+  flex-shrink: 0;
+}
+
+.select-error span {
+  flex: 1;
+}
+
+.btn-retry {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.35rem 0.8rem;
+  font-size: 0.78rem;
+  font-weight: 600;
+  font-family: inherit;
+  color: #f87171;
+  background: rgba(239, 68, 68, 0.12);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  border-radius: var(--radius-md, 8px);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.btn-retry:hover {
+  background: rgba(239, 68, 68, 0.22);
+  border-color: rgba(239, 68, 68, 0.5);
+  transform: scale(1.03);
+}
+
+.btn-retry i {
+  font-size: 0.85rem;
+}
+
+
 /* ---- Action Buttons ---- */
 .btn-group-custom {
   display: grid;
