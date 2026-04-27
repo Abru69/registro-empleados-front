@@ -138,8 +138,13 @@
     <div class="filter-section">
       <div class="filter-grid">
         <div class="filter-field">
-          <label><i class="bi bi-search"></i> Empleado</label>
-          <input type="text" [(ngModel)]="filterNombre" placeholder="Buscar por nombre..." (keypress)="onAttendanceKeyPress($event)" />
+          <label><i class="bi bi-person-fill"></i> Empleado</label>
+          <select [(ngModel)]="filterNombre" class="filter-select">
+            <option value="">— Todos los empleados —</option>
+            @for (emp of empleados; track emp.id) {
+              <option [value]="emp.nombre">{{ emp.nombre }}</option>
+            }
+          </select>
         </div>
         <div class="filter-field">
           <label><i class="bi bi-calendar-event"></i> Desde</label>
@@ -208,8 +213,13 @@
     <div class="filter-section">
       <div class="filter-grid">
         <div class="filter-field">
-          <label><i class="bi bi-search"></i> Empleado</label>
-          <input type="text" [(ngModel)]="filterNombreSemanal" placeholder="Buscar..." (keypress)="onWeeklyKeyPress($event)" />
+          <label><i class="bi bi-person-fill"></i> Empleado</label>
+          <select [(ngModel)]="filterNombreSemanal" class="filter-select">
+            <option value="">— Todos los empleados —</option>
+            @for (emp of empleados; track emp.id) {
+              <option [value]="emp.nombre">{{ emp.nombre }}</option>
+            }
+          </select>
         </div>
         <div class="filter-field">
           <label><i class="bi bi-calendar-week"></i> Semana</label>

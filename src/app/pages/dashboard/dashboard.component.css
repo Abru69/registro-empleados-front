@@ -554,6 +554,33 @@
   background: var(--input-bg-focus);
 }
 
+/* Select dropdown - mismo look que el input de filtro */
+.filter-select {
+  width: 100%;
+  padding: 0.6rem 0.875rem;
+  font-size: 0.875rem;
+  color: var(--color-text);
+  background: var(--filter-input-bg);
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius-md);
+  outline: none;
+  transition: all 0.2s ease;
+  font-family: inherit;
+  cursor: pointer;
+  appearance: auto;
+}
+
+.filter-select:focus {
+  border-color: rgba(99, 102, 241, 0.4);
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.08);
+  background: var(--input-bg-focus);
+}
+
+.filter-select option {
+  background: var(--color-surface);
+  color: var(--color-text);
+}
+
 .filter-actions {
   display: flex;
   gap: 0.5rem;
