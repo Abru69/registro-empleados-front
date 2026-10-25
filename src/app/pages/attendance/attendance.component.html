@@ -1,48 +1,25 @@
 <div class="attendance-page">
-  <!-- Dot-grid background -->
-  <div class="bg-pattern"></div>
-
   <div class="attendance-wrapper">
-    <!-- Main Card -->
     <div class="attendance-card">
-
-      <!-- Clock Section -->
       <div class="clock-section">
-        <div class="clock-ring">
-          <div class="clock-inner">
-            <i class="bi bi-clock-fill clock-icon"></i>
-          </div>
-        </div>
+        <p class="clock-kicker">Hora local</p>
         <div class="clock-time">{{ horaActual }}</div>
         <div class="clock-date">{{ fechaActual }}</div>
       </div>
 
-      <!-- Divider -->
-      <div class="card-divider">
-        <span class="divider-text">Registro de Asistencia</span>
-      </div>
-
-      <!-- Select Employee -->
       <div class="input-section">
         <div class="field-group">
-          <label for="nombre" class="field-label">
-            <i class="bi bi-person-fill"></i>
-            Selecciona tu nombre
-          </label>
+          <label for="nombre" class="field-label">Selecciona tu nombre</label>
           <div class="name-input-wrapper">
-            <i class="bi bi-chevron-down select-arrow"></i>
             @if (isLoadingEmpleados) {
-              <div class="select-loading">
-                <div class="mini-spinner"></div>
+              <div class="select-loading" role="status">
+                <div class="mini-spinner" aria-hidden="true"></div>
                 <span>Cargando empleados...</span>
               </div>
             } @else if (errorLoadingEmpleados) {
-              <div class="select-error">
-                <i class="bi bi-exclamation-triangle-fill"></i>
+              <div class="select-error" role="alert">
                 <span>No se pudo cargar la lista</span>
-                <button class="btn-retry" type="button" (click)="retryCargarEmpleados()">
-                  <i class="bi bi-arrow-clockwise"></i> Reintentar
-                </button>
+                <button class="btn-retry" type="button" (click)="retryCargarEmpleados()">Reintentar</button>
               </div>
             } @else {
               <select
@@ -60,67 +37,51 @@
           </div>
         </div>
 
-        <!-- Action Buttons -->
         <div class="btn-group-custom">
           <button
             class="btn-action btn-entrada"
+            type="button"
             (click)="registrar('entrada')"
             [disabled]="isRegistering"
             id="btn-registrar-entrada"
           >
             @if (isRegistering && lastAction === 'entrada') {
-              <span class="spinner-border spinner-border-sm"></span>
+              <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>
               <span>Registrando...</span>
             } @else {
-              <div class="btn-icon-wrap">
-                <i class="bi bi-box-arrow-in-right"></i>
-              </div>
-              <div class="btn-text">
-                <span class="btn-label">Registrar</span>
-                <span class="btn-sublabel">Entrada</span>
-              </div>
+              <i class="bi bi-box-arrow-in-right" aria-hidden="true"></i>
+              <span>Registrar entrada</span>
             }
           </button>
 
           <button
             class="btn-action btn-salida"
+            type="button"
             (click)="registrar('salida')"
             [disabled]="isRegistering"
             id="btn-registrar-salida"
           >
             @if (isRegistering && lastAction === 'salida') {
-              <span class="spinner-border spinner-border-sm"></span>
+              <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>
               <span>Registrando...</span>
             } @else {
-              <div class="btn-icon-wrap">
-                <i class="bi bi-box-arrow-left"></i>
-              </div>
-              <div class="btn-text">
-                <span class="btn-label">Registrar</span>
-                <span class="btn-sublabel">Salida</span>
-              </div>
+              <i class="bi bi-box-arrow-left" aria-hidden="true"></i>
+              <span>Registrar salida</span>
             }
           </button>
         </div>
       </div>
 
-      <!-- Success Feedback -->
-      @if (registrationSuccess) {
-        <div class="success-feedback" [class]="'success-' + lastAction">
-          <div class="success-icon">
-            <i class="bi bi-check-circle-fill"></i>
-          </div>
-          <div class="success-info">
-            <span class="success-title">¡Registro exitoso!</span>
-            <span class="success-sub">{{ lastAction === 'entrada' ? 'Entrada registrada correctamente' : 'Salida registrada correctamente' }}</span>
-          </div>
-        </div>
-      }
-
-      <!-- Info Footer -->
-      <div class="attendance-footer">
-        <i class="bi bi-info-circle-fill"></i>
-        <span>Selecciona tu nombre y presiona el botón correspondiente</span>
+      <div
+        class="success-slot"
+        [class.visible]="registrationSuccess"
+        [class.success-entrada]="lastAction === 'entrada'"
+        [class.success-salida]="lastAction === 'salida'"
+        role="status"
+        aria-live="polite"
+      >
+        <i class="bi bi-check-circle-fill" aria-hidden="true"></i>
+        <span>{{ lastAction === 'salida' ? 'Salida registrada' : 'Entrada registrada' }}</span>
       </div>
     </div>
   </div>

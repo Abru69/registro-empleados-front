@@ -2,13 +2,13 @@
   @for (toast of toastService.toasts; track toast.id) {
     <div class="toast-item" [ngClass]="'toast-' + toast.type" (click)="dismiss(toast.id)">
       <div class="toast-icon">
-        <i class="bi" [class]="getIcon(toast.type)"></i>
+        <i class="bi" [class]="getIcon(toast.type)" aria-hidden="true"></i>
       </div>
       <div class="toast-body">
         <span class="toast-text">{{ toast.text }}</span>
       </div>
-      <button class="toast-close" (click)="dismiss(toast.id)">
-        <i class="bi bi-x-lg"></i>
+      <button class="toast-close" type="button" (click)="dismiss(toast.id); $event.stopPropagation()" aria-label="Cerrar aviso">
+        <i class="bi bi-x-lg" aria-hidden="true"></i>
       </button>
       <div class="toast-progress"></div>
     </div>

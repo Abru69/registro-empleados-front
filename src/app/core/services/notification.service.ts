@@ -65,7 +65,7 @@ export class NotificationService {
 
   private showNativeNotification(data: AppNotification) {
     if (this.hasPermission && 'Notification' in window) {
-      const title = data.tipo === 'entrada' ? '✅ Entrada Registrada' : '👋 Salida Registrada';
+      const title = data.tipo === 'entrada' ? 'Entrada registrada' : 'Salida registrada';
       const options: NotificationOptions = {
         body: data.mensaje,
         icon: '/images/logo.webp',

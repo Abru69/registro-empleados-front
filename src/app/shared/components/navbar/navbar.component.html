@@ -1,10 +1,8 @@
 <nav class="navbar-custom" [class.open]="isMenuOpen">
   <div class="navbar-inner">
-
-    <!-- Brand -->
     <a routerLink="/" class="navbar-brand" (click)="closeMenu()">
       <div class="brand-icon-wrap">
-        <img src="images/logo.webp" alt="AltusTime" class="brand-logo-img" />
+        <img src="images/logo.webp" alt="" class="brand-logo-img" />
       </div>
       <div class="brand-info">
         <span class="brand-text">AltusTime</span>
@@ -12,67 +10,63 @@
       </div>
     </a>
 
-    <!-- Desktop Nav Links -->
     <div class="navbar-links navbar-links-desktop">
       @if (isAuthenticated) {
         @if (isAdmin) {
           <a routerLink="/dashboard" routerLinkActive="active" class="nav-link-custom">
-            <i class="bi bi-grid-1x2-fill"></i>
+            <i class="bi bi-grid-1x2-fill" aria-hidden="true"></i>
             <span>Resumen</span>
           </a>
         }
         <a routerLink="/attendance" routerLinkActive="active" class="nav-link-custom">
-          <i class="bi bi-person-check-fill"></i>
+          <i class="bi bi-person-check-fill" aria-hidden="true"></i>
           <span>Registro</span>
         </a>
-        <div class="nav-separator"></div>
+        <div class="nav-separator" aria-hidden="true"></div>
         <div class="nav-user-section">
           <span class="nav-user-badge">
-            <span class="user-avatar">{{ userName.charAt(0).toUpperCase() }}</span>
+            <span class="user-avatar" aria-hidden="true">{{ userName.charAt(0).toUpperCase() }}</span>
             {{ userName }}
           </span>
-          <button class="nav-logout-btn" (click)="logout()" title="Cerrar sesión">
-            <i class="bi bi-box-arrow-right"></i>
+          <button class="nav-logout-btn" type="button" (click)="logout()">
+            <i class="bi bi-box-arrow-right" aria-hidden="true"></i>
             <span>Salir</span>
           </button>
         </div>
       } @else {
         <a routerLink="/login" routerLinkActive="active" class="nav-link-custom">
-          <i class="bi bi-box-arrow-in-right"></i>
+          <i class="bi bi-box-arrow-in-right" aria-hidden="true"></i>
           <span>Iniciar Sesión</span>
         </a>
         <a routerLink="/attendance" routerLinkActive="active" class="nav-link-custom">
-          <i class="bi bi-person-check-fill"></i>
+          <i class="bi bi-person-check-fill" aria-hidden="true"></i>
           <span>Registro</span>
         </a>
       }
     </div>
 
-    <!-- Right controls -->
     <div class="navbar-right-controls">
       <button
         class="theme-toggle-btn"
+        type="button"
         (click)="toggleTheme()"
         [attr.aria-label]="isDark ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro'"
-        [title]="isDark ? 'Modo claro' : 'Modo oscuro'"
       >
-        <i [class]="isDark ? 'bi bi-sun-fill' : 'bi bi-moon-fill'"></i>
+        <i [class]="isDark ? 'bi bi-sun-fill' : 'bi bi-moon-fill'" aria-hidden="true"></i>
       </button>
-      <button class="navbar-toggler" (click)="toggleMenu()" [attr.aria-expanded]="isMenuOpen" aria-label="Abrir menú">
+      <button class="navbar-toggler" type="button" (click)="toggleMenu()" [attr.aria-expanded]="isMenuOpen" aria-label="Abrir menú">
         <span class="toggler-bar"></span>
         <span class="toggler-bar"></span>
         <span class="toggler-bar"></span>
       </button>
     </div>
-
   </div>
 </nav>
 
-<!-- Mobile overlay -->
 <div class="navbar-mobile-overlay" [class.show]="isMenuOpen">
   <div class="mobile-brand">
     <div class="brand-icon-wrap">
-      <img src="images/logo.webp" alt="AltusTime" class="brand-logo-img" />
+      <img src="images/logo.webp" alt="" class="brand-logo-img" />
     </div>
     <span class="brand-text">AltusTime</span>
   </div>
@@ -81,21 +75,21 @@
     @if (isAuthenticated) {
       @if (isAdmin) {
         <a routerLink="/dashboard" routerLinkActive="active" class="nav-link-custom" (click)="closeMenu()">
-          <i class="bi bi-grid-1x2-fill"></i>
+          <i class="bi bi-grid-1x2-fill" aria-hidden="true"></i>
           <span>Resumen</span>
         </a>
       }
       <a routerLink="/attendance" routerLinkActive="active" class="nav-link-custom" (click)="closeMenu()">
-        <i class="bi bi-person-check-fill"></i>
+        <i class="bi bi-person-check-fill" aria-hidden="true"></i>
         <span>Registro</span>
       </a>
     } @else {
       <a routerLink="/login" routerLinkActive="active" class="nav-link-custom" (click)="closeMenu()">
-        <i class="bi bi-box-arrow-in-right"></i>
+        <i class="bi bi-box-arrow-in-right" aria-hidden="true"></i>
         <span>Iniciar Sesión</span>
       </a>
       <a routerLink="/attendance" routerLinkActive="active" class="nav-link-custom" (click)="closeMenu()">
-        <i class="bi bi-person-check-fill"></i>
+        <i class="bi bi-person-check-fill" aria-hidden="true"></i>
         <span>Registro</span>
       </a>
     }
@@ -104,14 +98,14 @@
   @if (isAuthenticated) {
     <div class="mobile-user-section">
       <div class="mobile-user-info">
-        <div class="mobile-avatar">{{ userName.charAt(0).toUpperCase() }}</div>
+        <div class="mobile-avatar" aria-hidden="true">{{ userName.charAt(0).toUpperCase() }}</div>
         <div>
           <div class="mobile-username">{{ userName }}</div>
           <div class="mobile-role">{{ isAdmin ? 'Administrador' : 'Empleado' }}</div>
         </div>
       </div>
-      <button class="nav-logout-btn mobile-logout" (click)="logout()">
-        <i class="bi bi-box-arrow-right"></i>
+      <button class="nav-logout-btn mobile-logout" type="button" (click)="logout()">
+        <i class="bi bi-box-arrow-right" aria-hidden="true"></i>
         <span>Cerrar Sesión</span>
       </button>
     </div>

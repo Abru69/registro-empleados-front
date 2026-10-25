@@ -145,7 +145,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
           if (!silent) this.toastService.error(response.message || 'Error al cargar datos');
           return;
         }
-        const rows = response.data || [];
+        const rows = this.soloEmpleadoSeleccionado(response.data || [], this.filterNombre);
         const sig = JSON.stringify(rows.map((r: AttendanceRecord) => `${r.id}-${r.hora_salida}-${r.total_hhmm}`));
 
         if (!silent || sig !== this.lastAttendanceSig) {
@@ -177,7 +177,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
           if (!silent) this.toastService.error(response.message || 'Error al cargar datos semanales');
           return;
         }
-        const rows = response.data || [];
+        const rows = this.soloEmpleadoSeleccionado(response.data || [], this.filterNombreSemanal);
         const sig = JSON.stringify(rows.map((r: WeeklyRecord) => `${r.nombre}-${r.semana_iso}-${r.total_minutos}`));
 
         if (!silent || sig !== this.lastWeeklySig) {
@@ -193,6 +193,13 @@ export class DashboardComponent implements OnInit, OnDestroy {
         if (!silent) this.toastService.error('Error al cargar datos semanales');
       }
     });
+  }
+
+  /** Coincidencia exacta de nombre. "ian" no debe incluir "adrian". */
+  private soloEmpleadoSeleccionado<T extends { nombre: string }>(rows: T[], filtro: string): T[] {
+    const q = filtro.trim().toLocaleLowerCase('es-MX');
+    if (!q) return rows;
+    return rows.filter(r => r.nombre.trim().toLocaleLowerCase('es-MX') === q);
   }
 
   private updateStats(rows: AttendanceRecord[]): void {

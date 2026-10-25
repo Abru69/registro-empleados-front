@@ -1,87 +1,41 @@
 <div class="login-page">
-  <!-- Animated background shapes -->
-  <div class="bg-shapes">
-    <div class="shape shape-1"></div>
-    <div class="shape shape-2"></div>
-    <div class="shape shape-3"></div>
-    <div class="shape shape-4"></div>
-  </div>
-
-  <!-- Left panel – Branding -->
   <div class="login-branding">
     <div class="branding-inner">
-      <div class="brand-logo">
-        <div class="brand-icon-ring">
-          <img src="images/logo.webp" alt="AltusTime" class="brand-logo-img-login" />
-        </div>
-      </div>
+      <img src="images/logo.webp" alt="" class="brand-logo-img-login" />
       <h2 class="brand-name">AltusTime</h2>
-      <p class="brand-tagline">Control de asistencia inteligente para tu equipo</p>
-
-      <div class="brand-features">
-        <div class="feature-item">
-          <div class="feature-dot"></div>
-          <span>Registro de entradas y salidas en tiempo real</span>
-        </div>
-        <div class="feature-item">
-          <div class="feature-dot"></div>
-          <span>Panel administrativo con reportes semanales</span>
-        </div>
-        <div class="feature-item">
-          <div class="feature-dot"></div>
-          <span>Gestión completa de empleados</span>
-        </div>
-      </div>
-
-      <div class="brand-footer-info">
-        <span class="live-badge">
-          <span class="live-dot"></span>
-          Sistema activo
-        </span>
-      </div>
+      <p class="brand-tagline">Control de asistencia para tu equipo</p>
+      <ul class="brand-features">
+        <li>Registro de entradas y salidas</li>
+        <li>Panel con horas y reportes</li>
+        <li>Alta y baja de empleados</li>
+      </ul>
     </div>
   </div>
 
-  <!-- Right panel – Form -->
   <div class="login-panel">
     <div class="login-card">
-      <!-- Header -->
       <div class="login-header">
-        <div class="login-icon-wrapper">
-          <i class="bi bi-shield-lock-fill"></i>
-        </div>
-        <h1>Bienvenido</h1>
-        <p class="login-subtitle">Inicia sesión para acceder al sistema</p>
+        <h1>Iniciar sesión</h1>
+        <p class="login-subtitle">Usa tu usuario del sistema</p>
       </div>
 
-      <!-- Form -->
       <form (ngSubmit)="onSubmit()" class="login-form">
-        <!-- Usuario -->
         <div class="field-group">
-          <label for="usuario" class="field-label">
-            <i class="bi bi-person-fill"></i>
-            Usuario
-          </label>
-          <div class="input-group-custom">
-            <input
-              type="text"
-              id="usuario"
-              [(ngModel)]="usuario"
-              name="usuario"
-              placeholder="Ingresa tu usuario"
-              autocomplete="username"
-              [disabled]="isLoading"
-              required
-            />
-          </div>
+          <label for="usuario" class="field-label">Usuario</label>
+          <input
+            type="text"
+            id="usuario"
+            [(ngModel)]="usuario"
+            name="usuario"
+            placeholder="Ingresa tu usuario"
+            autocomplete="username"
+            [disabled]="isLoading"
+            required
+          />
         </div>
 
-        <!-- Password -->
         <div class="field-group">
-          <label for="password" class="field-label">
-            <i class="bi bi-key-fill"></i>
-            Contraseña
-          </label>
+          <label for="password" class="field-label">Contraseña</label>
           <div class="input-group-custom">
             <input
               [type]="showPassword ? 'text' : 'password'"
@@ -94,28 +48,22 @@
               required
             />
             <button type="button" class="toggle-password" (click)="togglePassword()" [attr.aria-label]="showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'">
-              <i class="bi" [class]="showPassword ? 'bi-eye-slash-fill' : 'bi-eye-fill'"></i>
+              <i class="bi" [class]="showPassword ? 'bi-eye-slash-fill' : 'bi-eye-fill'" aria-hidden="true"></i>
             </button>
           </div>
         </div>
 
-        <!-- Submit -->
         <button type="submit" class="login-btn" [disabled]="isLoading" id="login-submit-btn">
           @if (isLoading) {
-            <span class="spinner-border spinner-border-sm me-2"></span>
+            <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>
             Verificando...
           } @else {
-            <i class="bi bi-box-arrow-in-right me-2"></i>
-            Iniciar Sesión
+            Iniciar sesión
           }
         </button>
       </form>
 
-      <!-- Footer -->
-      <div class="login-footer">
-        <i class="bi bi-shield-check me-1"></i>
-        <span>Acceso seguro · Solo personal autorizado</span>
-      </div>
+      <p class="login-footer">Acceso solo para personal autorizado</p>
     </div>
   </div>
 </div>

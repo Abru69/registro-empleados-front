@@ -1,194 +1,163 @@
 <div class="dashboard-page">
-
-  <!-- ===== Header ===== -->
-  <div class="dashboard-header">
+  <header class="dashboard-header">
     <div class="header-left">
-      <div class="header-icon">
-        <i class="bi bi-grid-1x2-fill"></i>
-      </div>
-      <div class="header-text">
-        <h1>Panel de Asistencias</h1>
-        <p class="header-subtitle">Visualiza y gestiona los registros en tiempo real</p>
+      <div>
+        <h1>Panel de asistencias</h1>
+        <p class="header-subtitle">Registros, horas y empleados</p>
       </div>
     </div>
     <div class="header-right">
       <span class="live-indicator">
-        <span class="live-dot"></span>
+        <span class="live-dot" aria-hidden="true"></span>
         En tiempo real
       </span>
       <span class="header-date">{{ todayLabel }}</span>
     </div>
-  </div>
+  </header>
 
-  <!-- ===== Stats Cards ===== -->
   <div class="stats-grid">
-    <div class="stat-card stat-employees" (click)="openStatModal('total')" style="cursor: pointer" title="Ver detalle">
-      <div class="stat-top">
-        <div class="stat-icon-wrapper">
-          <i class="bi bi-people-fill"></i>
-        </div>
-        <span class="stat-badge badge-accent">Total</span>
-      </div>
-      <div class="stat-value">{{ totalEmpleadosActivos }}</div>
-      <div class="stat-label">Empleados registrados</div>
-    </div>
-    <div class="stat-card stat-today" (click)="openStatModal('today')" style="cursor: pointer" title="Ver detalle">
-      <div class="stat-top">
-        <div class="stat-icon-wrapper">
-          <i class="bi bi-calendar-check-fill"></i>
-        </div>
-        <span class="stat-badge badge-success">Hoy</span>
-      </div>
-      <div class="stat-value">{{ registrosHoy }}</div>
-      <div class="stat-label">Registros de hoy</div>
-    </div>
-    <div class="stat-card stat-active" (click)="openStatModal('active')" style="cursor: pointer" title="Ver detalle">
-      <div class="stat-top">
-        <div class="stat-icon-wrapper">
-          <i class="bi bi-person-check-fill"></i>
-        </div>
-        <span class="stat-badge badge-primary">Activos</span>
-      </div>
-      <div class="stat-value">{{ empleadosHoy }}</div>
-      <div class="stat-label">Empleados presentes hoy</div>
-    </div>
-    <div class="stat-card stat-pending" (click)="openStatModal('pending')" style="cursor: pointer" title="Ver detalle">
-      <div class="stat-top">
-        <div class="stat-icon-wrapper">
-          <i class="bi bi-clock-history"></i>
-        </div>
-        <span class="stat-badge badge-warning">Pendiente</span>
-      </div>
-      <div class="stat-value">{{ sinSalida }}</div>
-      <div class="stat-label">Sin registrar salida</div>
-    </div>
+    <button type="button" class="stat-card stat-employees" (click)="openStatModal('total')">
+      <span class="stat-badge">Total</span>
+      <span class="stat-value">{{ totalEmpleadosActivos }}</span>
+      <span class="stat-label">Empleados registrados</span>
+    </button>
+    <button type="button" class="stat-card stat-today" (click)="openStatModal('today')">
+      <span class="stat-badge badge-success">Hoy</span>
+      <span class="stat-value">{{ registrosHoy }}</span>
+      <span class="stat-label">Registros de hoy</span>
+    </button>
+    <button type="button" class="stat-card stat-active" (click)="openStatModal('active')">
+      <span class="stat-badge">Activos</span>
+      <span class="stat-value">{{ empleadosHoy }}</span>
+      <span class="stat-label">Presentes hoy</span>
+    </button>
+    <button type="button" class="stat-card stat-pending" (click)="openStatModal('pending')">
+      <span class="stat-badge badge-warning">Pendiente</span>
+      <span class="stat-value">{{ sinSalida }}</span>
+      <span class="stat-label">Sin registrar salida</span>
+    </button>
   </div>
 
-  <!-- ===== Tabs ===== -->
-  <div class="dashboard-tabs" role="tablist">
-    <button class="tab-btn" [class.active]="activeTab === 'empleados'" (click)="setTab('empleados')">
-      <i class="bi bi-people-fill"></i>
+  <div class="dashboard-tabs" role="tablist" aria-label="Secciones del panel">
+    <button class="tab-btn" type="button" role="tab" [attr.aria-selected]="activeTab === 'empleados'" [class.active]="activeTab === 'empleados'" (click)="setTab('empleados')">
+      <i class="bi bi-people-fill" aria-hidden="true"></i>
       <span>Empleados</span>
       <span class="tab-count">{{ totalEmpleadosActivos }}</span>
     </button>
-    <button class="tab-btn" [class.active]="activeTab === 'registros'" (click)="setTab('registros')">
-      <i class="bi bi-card-checklist"></i>
+    <button class="tab-btn" type="button" role="tab" [attr.aria-selected]="activeTab === 'registros'" [class.active]="activeTab === 'registros'" (click)="setTab('registros')">
+      <i class="bi bi-card-checklist" aria-hidden="true"></i>
       <span>Registros</span>
       <span class="tab-count">{{ attendanceRows.length }}</span>
     </button>
-    <button class="tab-btn" [class.active]="activeTab === 'semanales'" (click)="setTab('semanales')">
-      <i class="bi bi-calendar-range"></i>
-      <span>Horas Semanales</span>
+    <button class="tab-btn" type="button" role="tab" [attr.aria-selected]="activeTab === 'semanales'" [class.active]="activeTab === 'semanales'" (click)="setTab('semanales')">
+      <i class="bi bi-calendar-range" aria-hidden="true"></i>
+      <span>Horas semanales</span>
       <span class="tab-count">{{ weeklyRows.length }}</span>
     </button>
   </div>
 
-  <!-- ===== EMPLEADOS SECTION ===== -->
-  <div class="section-card" [class.d-none]="activeTab !== 'empleados'">
+  <section class="section-card" role="tabpanel" [class.d-none]="activeTab !== 'empleados'" [attr.aria-hidden]="activeTab !== 'empleados'">
     <div class="section-header">
-      <div class="section-title">
-        <i class="bi bi-person-badge-fill"></i>
-        <h2>Gestión de Empleados</h2>
-      </div>
+      <h2>Gestión de empleados</h2>
     </div>
-    <div class="add-employee-panel">
-      <div class="add-employee-form">
-        <label for="nuevoEmpleado" class="form-label">
-          <i class="bi bi-person-plus-fill"></i>
-          Nombre completo
-        </label>
-        <div class="add-employee-row">
-          <input type="text" id="nuevoEmpleado" [(ngModel)]="nuevoEmpleadoNombre" placeholder="Ej. Juan García López" (keypress)="$event.key === 'Enter' ? addEmpleado() : null" />
-          <button class="btn-add-employee" (click)="addEmpleado()" [disabled]="isAddingEmpleado">
-            @if (isAddingEmpleado) { <span class="spinner-border spinner-border-sm"></span> } @else { <i class="bi bi-plus-lg"></i> }
-            <span>Añadir</span>
-          </button>
-        </div>
-      </div>
-    </div>
+    <form class="add-employee-row" (ngSubmit)="addEmpleado()">
+      <label class="visually-hidden" for="nuevoEmpleado">Nombre completo</label>
+      <input type="text" id="nuevoEmpleado" [(ngModel)]="nuevoEmpleadoNombre" name="nuevoEmpleado" placeholder="Nombre completo" />
+      <button class="btn-add-employee" type="submit" [disabled]="isAddingEmpleado">
+        @if (isAddingEmpleado) { <span class="spinner-border spinner-border-sm" aria-hidden="true"></span> }
+        Añadir
+      </button>
+    </form>
+
     <div class="empleados-list">
       @if (isLoadingEmpleadosList) {
-        <div class="grid-loading"><div class="loading-spinner"></div><span>Cargando empleados...</span></div>
+        <div class="grid-loading" role="status"><div class="loading-spinner" aria-hidden="true"></div><span>Cargando empleados...</span></div>
       } @else if (empleados.length === 0) {
         <div class="empty-state">
-          <div class="empty-icon"><i class="bi bi-people"></i></div>
           <p class="empty-title">Sin empleados registrados</p>
-          <p class="empty-sub">Añade el primer empleado usando el formulario de arriba</p>
+          <p class="empty-sub">Añade el primero con el campo de arriba</p>
         </div>
       } @else {
         <div class="empleados-grid">
           @for (emp of empleados; track emp.id) {
             <div class="employee-card">
-              <div class="employee-avatar">{{ emp.nombre.charAt(0).toUpperCase() }}</div>
-              <div class="employee-info"><span class="employee-name">{{ emp.nombre }}</span><span class="employee-id">#{{ emp.id }}</span></div>
-              <button class="btn-delete-employee" (click)="deleteEmpleado(emp.id)" title="Eliminar"><i class="bi bi-trash-fill"></i></button>
+              <div class="employee-avatar" aria-hidden="true">{{ emp.nombre.charAt(0).toUpperCase() }}</div>
+              <div class="employee-info">
+                <span class="employee-name">{{ emp.nombre }}</span>
+                <span class="employee-id">#{{ emp.id }}</span>
+              </div>
+              <button class="btn-delete-employee" type="button" (click)="deleteEmpleado(emp.id)" [attr.aria-label]="'Eliminar a ' + emp.nombre">
+                <i class="bi bi-trash3" aria-hidden="true"></i>
+              </button>
             </div>
           }
         </div>
       }
     </div>
-  </div>
+  </section>
 
-  <!-- ===== ATTENDANCE RECORDS SECTION ===== -->
-  <div class="section-card" [class.d-none]="activeTab !== 'registros'">
+  <section class="section-card" role="tabpanel" [class.d-none]="activeTab !== 'registros'" [attr.aria-hidden]="activeTab !== 'registros'">
     <div class="section-header">
-      <div class="section-title"><i class="bi bi-table"></i><h2>Registros de Asistencia</h2></div>
-      <button class="btn-export" (click)="exportAttendance()"><i class="bi bi-file-earmark-spreadsheet"></i> Exportar CSV</button>
+      <h2>Registros de asistencia</h2>
+      <button class="btn-export" type="button" (click)="exportAttendance()">
+        <i class="bi bi-file-earmark-spreadsheet" aria-hidden="true"></i>
+        Exportar CSV
+      </button>
     </div>
     <div class="filter-section">
       <div class="filter-grid">
         <div class="filter-field">
-          <label><i class="bi bi-person-fill"></i> Empleado</label>
-          <select [(ngModel)]="filterNombre" class="filter-select">
-            <option value="">— Todos los empleados —</option>
+          <label for="filtro-empleado">Empleado</label>
+          <select id="filtro-empleado" [(ngModel)]="filterNombre" class="filter-select">
+            <option value="">Todos los empleados</option>
             @for (emp of empleados; track emp.id) {
               <option [value]="emp.nombre">{{ emp.nombre }}</option>
             }
           </select>
         </div>
         <div class="filter-field">
-          <label><i class="bi bi-calendar-event"></i> Desde</label>
-          <input type="date" [(ngModel)]="filterDesde" [max]="todayMax" />
+          <label for="filtro-desde">Desde</label>
+          <input id="filtro-desde" type="date" [(ngModel)]="filterDesde" [max]="todayMax" />
         </div>
         <div class="filter-field">
-          <label><i class="bi bi-calendar-event"></i> Hasta</label>
-          <input type="date" [(ngModel)]="filterHasta" [max]="todayMax" />
+          <label for="filtro-hasta">Hasta</label>
+          <input id="filtro-hasta" type="date" [(ngModel)]="filterHasta" [max]="todayMax" />
         </div>
       </div>
       <div class="filter-actions">
-        <button class="btn-filter-primary" (click)="filterAttendance()"><i class="bi bi-funnel-fill"></i> Buscar</button>
-        <button class="btn-filter-secondary" (click)="clearAttendanceFilters()"><i class="bi bi-x-circle"></i> Limpiar</button>
+        <button class="btn-filter-primary" type="button" (click)="filterAttendance()">Buscar</button>
+        <button class="btn-filter-secondary" type="button" (click)="clearAttendanceFilters()">Limpiar</button>
       </div>
     </div>
-    
-    <div class="table-responsive styled-table-wrapper position-relative">
+
+    <div class="styled-table-wrapper">
       @if (isLoadingAttendance) {
-        <div class="overlay-loading"><div class="loading-spinner"></div></div>
+        <div class="overlay-loading" role="status"><div class="loading-spinner" aria-hidden="true"></div></div>
       }
-      <table class="table styled-table table-hover align-middle mb-0">
+      <table class="styled-table">
         <thead>
           <tr>
-            <th>Nombre del Empleado</th>
-            <th class="text-center">Fecha</th>
-            <th class="text-center">Hora Entrada</th>
-            <th class="text-center">Hora Salida</th>
-            <th class="text-end">Total Horas</th>
+            <th>Nombre</th>
+            <th>Fecha</th>
+            <th>Entrada</th>
+            <th>Salida</th>
+            <th class="num">Total</th>
           </tr>
         </thead>
         <tbody>
           @if (attendanceRows.length === 0 && !isLoadingAttendance) {
-            <tr><td colspan="5" class="text-center text-muted py-4">No hay registros para mostrar.</td></tr>
+            <tr><td colspan="5" class="empty-cell">No hay registros para mostrar.</td></tr>
           } @else {
             @for (row of paginatedRegistros; track row.id) {
               <tr>
-                <td class="fw-medium text-main">{{ row.nombre }}</td>
-                <td class="text-center text-secondary-color">{{ row.fecha }}</td>
-                <td class="text-center text-secondary-color fw-medium">{{ row.hora }}</td>
-                <td class="text-center">
-                  @if (row.hora_salida) { <span class="fw-medium text-secondary-color">{{ row.hora_salida }}</span> }
-                  @else { <span class="badge badge-warning-subtle text-warning">Sin salida</span> }
+                <td class="name-cell">{{ row.nombre }}</td>
+                <td class="num">{{ row.fecha }}</td>
+                <td class="num">{{ row.hora }}</td>
+                <td class="num">
+                  @if (row.hora_salida) { {{ row.hora_salida }} }
+                  @else { <span class="badge badge-warning">Sin salida</span> }
                 </td>
-                <td class="text-end total-horas-cell fw-bold text-success">{{ row.total_hhmm }}</td>
+                <td class="num total">{{ row.total_hhmm }}</td>
               </tr>
             }
           }
@@ -197,68 +166,70 @@
     </div>
     @if (totalPagesRegistros > 1) {
       <div class="pagination-container">
-        <button class="btn-page" [disabled]="currentPageRegistros === 1" (click)="currentPageRegistros = currentPageRegistros - 1"><i class="bi bi-chevron-left"></i></button>
+        <button class="btn-page" type="button" aria-label="Página anterior" [disabled]="currentPageRegistros === 1" (click)="currentPageRegistros = currentPageRegistros - 1"><i class="bi bi-chevron-left" aria-hidden="true"></i></button>
         <span class="page-info">Página {{ currentPageRegistros }} de {{ totalPagesRegistros }}</span>
-        <button class="btn-page" [disabled]="currentPageRegistros === totalPagesRegistros" (click)="currentPageRegistros = currentPageRegistros + 1"><i class="bi bi-chevron-right"></i></button>
+        <button class="btn-page" type="button" aria-label="Página siguiente" [disabled]="currentPageRegistros === totalPagesRegistros" (click)="currentPageRegistros = currentPageRegistros + 1"><i class="bi bi-chevron-right" aria-hidden="true"></i></button>
       </div>
     }
-  </div>
+  </section>
 
-  <!-- ===== WEEKLY HOURS SECTION ===== -->
-  <div class="section-card" [class.d-none]="activeTab !== 'semanales'">
+  <section class="section-card" role="tabpanel" [class.d-none]="activeTab !== 'semanales'" [attr.aria-hidden]="activeTab !== 'semanales'">
     <div class="section-header">
-      <div class="section-title"><i class="bi bi-bar-chart-fill"></i><h2>Horas Semanales</h2></div>
-      <button class="btn-export" (click)="exportWeekly()"><i class="bi bi-file-earmark-spreadsheet"></i> Exportar CSV</button>
+      <h2>Horas semanales</h2>
+      <button class="btn-export" type="button" (click)="exportWeekly()">
+        <i class="bi bi-file-earmark-spreadsheet" aria-hidden="true"></i>
+        Exportar CSV
+      </button>
     </div>
     <div class="filter-section">
-      <div class="filter-grid">
+      <div class="filter-grid weekly">
         <div class="filter-field">
-          <label><i class="bi bi-person-fill"></i> Empleado</label>
-          <select [(ngModel)]="filterNombreSemanal" class="filter-select">
-            <option value="">— Todos los empleados —</option>
+          <label for="filtro-semanal">Empleado</label>
+          <select id="filtro-semanal" [(ngModel)]="filterNombreSemanal" class="filter-select">
+            <option value="">Todos los empleados</option>
             @for (emp of empleados; track emp.id) {
               <option [value]="emp.nombre">{{ emp.nombre }}</option>
             }
           </select>
         </div>
         <div class="filter-field">
-          <label><i class="bi bi-calendar-week"></i> Semana</label>
-          <input type="week" [(ngModel)]="filterSemana" />
+          <label for="filtro-semana">Semana</label>
+          <input id="filtro-semana" type="week" [(ngModel)]="filterSemana" />
         </div>
       </div>
       <div class="filter-actions">
-        <button class="btn-filter-primary" (click)="filterWeekly()"><i class="bi bi-funnel-fill"></i> Filtrar</button>
-        <button class="btn-filter-secondary" (click)="clearWeeklyFilters()"><i class="bi bi-x-circle"></i> Limpiar</button>
+        <button class="btn-filter-primary" type="button" (click)="filterWeekly()">Filtrar</button>
+        <button class="btn-filter-secondary" type="button" (click)="clearWeeklyFilters()">Limpiar</button>
       </div>
     </div>
-    
-    <div class="table-responsive styled-table-wrapper position-relative">
+
+    <div class="styled-table-wrapper">
       @if (isLoadingWeekly) {
-        <div class="overlay-loading"><div class="loading-spinner"></div></div>
+        <div class="overlay-loading" role="status"><div class="loading-spinner" aria-hidden="true"></div></div>
       }
-      <table class="table styled-table table-hover align-middle mb-0">
+      <table class="styled-table">
         <thead>
           <tr>
             <th>Empleado</th>
-            <th class="text-center">Semana</th>
-            <th class="text-center">Inicio <small>(Lunes)</small></th>
-            <th class="text-center">Fin <small>(Domingo)</small></th>
-            <th class="text-center">Días Trabajados</th>
-            <th class="text-end">Total Semana</th>
+            <th>Semana</th>
+            <th>Inicio</th>
+            <th>Fin</th>
+            <th class="num">Días</th>
+            <th>Total</th>
           </tr>
         </thead>
         <tbody>
           @if (weeklyRows.length === 0 && !isLoadingWeekly) {
-            <tr><td colspan="6" class="text-center text-muted py-4">No hay datos semanales.</td></tr>
+            <tr><td colspan="6" class="empty-cell">No hay datos semanales.</td></tr>
           } @else {
             @for (row of paginatedWeekly; track row.nombre + row.semana_iso) {
               <tr>
-                <td class="fw-medium text-main">{{ row.nombre }}</td>
-                <td class="text-center text-secondary-color">{{ row.semana_iso }}</td>
-                <td class="text-center text-secondary-color">{{ row.fecha_inicio }}</td>
-                <td class="text-center text-secondary-color">{{ row.fecha_fin }}</td>
-                <td class="text-center fw-medium">{{ row.total_registros }}</td>
-                <td class="text-end fw-bold text-success">{{ formatWeeklyMinutes(row.total_minutos, row.total_horas_decimal) }}</td>
+                <td class="name-cell">{{ row.nombre }}</td>
+                <td class="num">{{ row.semana_iso }}</td>
+                <td class="num">{{ row.fecha_inicio }}</td>
+                <td class="num">{{ row.fecha_fin }}</td>
+                <td class="num">{{ row.total_registros }}</td>
+                <td class="num total">{{ formatWeeklyMinutes(row.total_minutos, row.total_horas_decimal) }}</td>
               </tr>
             }
           }
@@ -267,73 +238,58 @@
     </div>
     @if (totalPagesWeekly > 1) {
       <div class="pagination-container">
-        <button class="btn-page" [disabled]="currentPageWeekly === 1" (click)="currentPageWeekly = currentPageWeekly - 1"><i class="bi bi-chevron-left"></i></button>
+        <button class="btn-page" type="button" aria-label="Página anterior" [disabled]="currentPageWeekly === 1" (click)="currentPageWeekly = currentPageWeekly - 1"><i class="bi bi-chevron-left" aria-hidden="true"></i></button>
         <span class="page-info">Página {{ currentPageWeekly }} de {{ totalPagesWeekly }}</span>
-        <button class="btn-page" [disabled]="currentPageWeekly === totalPagesWeekly" (click)="currentPageWeekly = currentPageWeekly + 1"><i class="bi bi-chevron-right"></i></button>
+        <button class="btn-page" type="button" aria-label="Página siguiente" [disabled]="currentPageWeekly === totalPagesWeekly" (click)="currentPageWeekly = currentPageWeekly + 1"><i class="bi bi-chevron-right" aria-hidden="true"></i></button>
       </div>
     }
-  </div>
-
+  </section>
 </div>
 
-<!-- ===== STAT DETAILS MODAL ===== -->
 @if (showStatModal) {
   <div class="modal-backdrop" (click)="closeStatModal()">
-    <div class="modal-box modal-stat-box" (click)="$event.stopPropagation()">
+    <div class="modal-box modal-stat-box" role="dialog" aria-modal="true" aria-labelledby="stat-modal-title" (click)="$event.stopPropagation()">
       <div class="modal-header-stat">
-        <div class="modal-icon-wrap" [ngClass]="statModalBadgeClass"><i class="bi" [ngClass]="statModalIcon"></i></div>
-        <div class="modal-header-info">
-          <h3 class="modal-title-stat">{{ statModalTitle }}</h3>
-          <span class="stat-count-badge">{{ statModalItems.length }} {{ statModalItems.length === 1 ? 'registro' : 'registros' }}</span>
-        </div>
-        <button class="btn-close-modal" (click)="closeStatModal()"><i class="bi bi-x-lg"></i></button>
+        <h3 id="stat-modal-title">{{ statModalTitle }}</h3>
+        <button class="btn-close-modal" type="button" (click)="closeStatModal()" aria-label="Cerrar">
+          <i class="bi bi-x-lg" aria-hidden="true"></i>
+        </button>
       </div>
-      
+      <p class="stat-count-badge">{{ statModalItems.length }} {{ statModalItems.length === 1 ? 'registro' : 'registros' }}</p>
       <div class="modal-stat-content">
         @if (statModalItems.length === 0) {
-          <div class="stat-empty-state">
-            <i class="bi bi-inboxes text-muted"></i>
-            <p>No hay datos disponibles</p>
-          </div>
+          <p class="stat-empty-state">No hay datos disponibles</p>
         } @else {
-          <div class="stat-list">
-            @for (item of statModalItems; track item.nombre) {
-              <div class="stat-list-item">
-                <div class="stat-item-avatar">
-                  {{ item.nombre.charAt(0).toUpperCase() }}
-                </div>
-                <div class="stat-item-info">
+          <ul class="stat-list">
+            @for (item of statModalItems; track item.nombre + item.detalle) {
+              <li class="stat-list-item">
+                <span class="stat-item-avatar" aria-hidden="true">{{ item.nombre.charAt(0).toUpperCase() }}</span>
+                <span class="stat-item-info">
                   <span class="stat-item-name">{{ item.nombre }}</span>
                   <span class="stat-item-detail">{{ item.detalle }}</span>
-                </div>
+                </span>
                 @if (item.badge) {
-                  <span class="stat-item-badge" 
-                    [class.badge-warning]="item.badge === 'Sin salida' || item.badge === 'Pendiente'" 
-                    [class.badge-primary]="item.badge === 'Activo'"
-                    [class.badge-success]="item.badge.includes('Salida')">
-                    {{ item.badge }}
-                  </span>
+                  <span class="stat-item-badge" [class.badge-warning]="item.badge === 'Sin salida' || item.badge === 'Pendiente'">{{ item.badge }}</span>
                 }
-              </div>
+              </li>
             }
-          </div>
+          </ul>
         }
       </div>
     </div>
   </div>
 }
 
-<!-- ===== DELETE CONFIRMATION MODAL ===== -->
 @if (showDeleteModal) {
   <div class="modal-backdrop" (click)="cancelDelete()">
-    <div class="modal-box" (click)="$event.stopPropagation()">
-      <div class="modal-icon-wrap"><i class="bi bi-trash3-fill"></i></div>
-      <h3 class="modal-title">¿Eliminar empleado?</h3>
-      <p class="modal-desc">Estás a punto de eliminar a <strong>{{ deleteTargetName }}</strong>. Esta acción eliminará todos sus registros y no se puede deshacer.</p>
+    <div class="modal-box" role="dialog" aria-modal="true" aria-labelledby="delete-modal-title" (click)="$event.stopPropagation()">
+      <h3 id="delete-modal-title" class="modal-title">¿Eliminar empleado?</h3>
+      <p class="modal-desc">Vas a eliminar a <strong>{{ deleteTargetName }}</strong>. Esta acción no se puede deshacer.</p>
       <div class="modal-actions">
-        <button class="modal-btn modal-btn-cancel" (click)="cancelDelete()"><i class="bi bi-x-lg"></i> Cancelar</button>
-        <button class="modal-btn modal-btn-confirm" (click)="confirmDelete()" [disabled]="isDeletingEmpleado">
-          @if (isDeletingEmpleado) { <span class="spinner-border spinner-border-sm"></span> } @else { <i class="bi bi-trash3-fill"></i> } Eliminar
+        <button class="modal-btn modal-btn-cancel" type="button" (click)="cancelDelete()">Cancelar</button>
+        <button class="modal-btn modal-btn-confirm" type="button" (click)="confirmDelete()" [disabled]="isDeletingEmpleado">
+          @if (isDeletingEmpleado) { <span class="spinner-border spinner-border-sm" aria-hidden="true"></span> }
+          Eliminar
         </button>
       </div>
     </div>
